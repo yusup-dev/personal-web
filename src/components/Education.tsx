@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { getExperiences } from "../api/apiClient";
-import type { Experience } from "../types/experience";
+import {getEducations } from "../api/apiClient";
+import type { Education } from "../types/education";
 import Loader from "./Loader";
 
 const formatDate = (date: string) => {
@@ -10,58 +10,67 @@ const formatDate = (date: string) => {
   });
 };
 
-const ExperienceComponent = () => {
-  const [experiences, setExperiences] = useState<Experience[]>([]);
+const EducationComponent = () => {
+  const [educations, setEducations] = useState<Education[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchExperiences = async () => {
+    const fetchEducation = async () => {
       try {
-        const data = await getExperiences();
-        setExperiences(data);
+        const data = await getEducations();
+        setEducations(data);
       } catch (error) {
-        console.error("Failed to fetch experiences:", error);
+        console.error("Failed to fetch educations:", error);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchExperiences();
+    fetchEducation();
   }, []);
 
   if (loading) {
-    return <Loader />;
+    return <Loader/>;
   }
 
   return (
     <section style={{ maxWidth: "900px", color: "#fff" }}>
       <h2 style={{ marginTop: "80px", fontSize: "22px", marginBottom: "40px" }}>
-        Experience.
+        Education.
       </h2>
 
       <div style={{ display: "flex", flexDirection: "column", gap: "48px" }}>
-        {experiences.map((exp, idx) => (
-          <div key={exp.id ?? idx} style={{ display: "flex", gap: "24px" }}>
+        {educations.map((edu, idx) => (
+          <div key={edu.id ?? idx} style={{ display: "flex", gap: "24px" }}>
             <div style={{ position: "relative" }}>
               <div style={dotStyle} />
-              {idx !== experiences.length - 1 && <div style={lineStyle} />}
+              {idx !== educations.length - 1 && (
+                <div style={lineStyle} />
+              )}
             </div>
             <div>
               <h3 style={{ fontSize: "18px", marginBottom: "4px" }}>
-                {exp.position}
+                {edu.school}
               </h3>
 
-              <p style={{ opacity: 0.8, marginBottom: "4px" }}>{exp.company}</p>
-
-              <p style={{ opacity: 0.6, fontSize: "14px" }}>
-                {formatDate(exp.startDate)}
-                {exp.endDate ? ` – ${formatDate(exp.endDate)}` : " – Present"}
-                {exp.location ? ` · ${exp.location}` : ""}
+              <p style={{ opacity: 0.8, marginBottom: "4px" }}>
+                {edu.degree}
               </p>
 
-              {exp.description && (
+              <p style={{ opacity: 0.6, fontSize: "14px" }}>
+                {formatDate(edu.startDate)}
+                {edu.endDate ? ` – ${formatDate(edu.endDate)}` : " – Present"}
+                {edu.location ? ` · ${edu.location}` : ""}
+              </p>
+
+              {edu.gpa && (
+                <p style={{ marginTop: "10px", opacity: 0.8, fontSize:"14px" }}>
+                  GPA : {edu.gpa}
+                </p>
+              )}
+              {edu.description && (
                 <p style={{ marginTop: "10px", opacity: 0.8 }}>
-                  {exp.description}
+                  {edu.description}
                 </p>
               )}
             </div>
@@ -87,4 +96,4 @@ const lineStyle = {
   margin: "4px auto 0",
 };
 
-export default ExperienceComponent;
+export default EducationComponent;

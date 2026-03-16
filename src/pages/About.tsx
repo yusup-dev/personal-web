@@ -1,31 +1,53 @@
 import { FiArrowUpRight } from "react-icons/fi";
 import Experience from "../components/Experience";
+import type { About } from "../types/about";
+import { useEffect, useState } from "react";
+import { getAbout, getSkills } from "../api/apiClient";
+import type { Skill } from "../types/skill";
+import EducationComponent from "../components/Education";
+import Loader from "../components/Loader";
 
 const About = () => {
+  const [about, setAbout] = useState<About | null>(null);
+  const [skills, setSkills] = useState<Skill[]>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const aboutData = await getAbout();
+        setAbout(aboutData);
+
+        const skillsData = await getSkills();
+        setSkills(skillsData);
+      } catch (error) {
+        console.error("Failed to fetch data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (!about) {
+    return <Loader/>;
+  }
+  
+  const groupedSkills = skills.reduce((acc: Record<string, string[]>, skill) => {
+  if (!acc[skill.category]) {
+    acc[skill.category] = [];
+  }
+
+  acc[skill.category].push(skill.name);
+  return acc;
+}, {});
+
   return (
     <section style={{ maxWidth: "900px", marginTop: "80px" }}>
-      {/* About */}
-      <h2 style={{ fontSize: "32px", marginBottom: "24px" }}>About Me.</h2>
+      <h2 style={{ fontSize: "22px", marginBottom: "24px" }}>About Me.</h2>
 
       <p style={{ fontSize: "16px", lineHeight: "1.8", opacity: 0.9 }}>
-        Hi, I’m <strong>Muhamad Yusup</strong>, a{" "}
-        <strong>Backend Engineer</strong> focused on building scalable,
-        reliable, and high-performance backend systems.
+        {about.description}
       </p>
 
-      <p style={{ fontSize: "16px", lineHeight: "1.8", opacity: 0.9 }}>
-        I specialize in designing RESTful APIs, microservices, and backend
-        architectures using Java Spring Boot and Golang. I enjoy solving
-        problems related to system design, performance optimization, and data
-        consistency.
-      </p>
-
-      <p style={{ fontSize: "16px", lineHeight: "1.8", opacity: 0.9 }}>
-        Outside of work, I enjoy learning about distributed systems, backend
-        architecture, and writing about technology.
-      </p>
-
-      {/* Links */}
       <div
         style={{
           display: "flex",
@@ -34,41 +56,31 @@ const About = () => {
           fontSize: "16px",
         }}
       >
-        <a href="/resume.pdf" download>
-          <FiArrowUpRight className="icon" style={{ marginRight: "5px" }} />
+        <a href={`${import.meta.env.VITE_API_URL}/about/1/download`}>
+          <FiArrowUpRight style={{ marginRight: "5px" }} />
           resume
         </a>
 
-        <a
-          href="https://cal.com/yusup-dev/15min"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <FiArrowUpRight
-            className="icon"
-            style={{
-              marginRight: "5px",
-            }}
-          />
-          book a call
+        <a href={about.contactLink} target="_blank" rel="noopener noreferrer">
+          <FiArrowUpRight style={{ marginRight: "5px" }} />
+          contact me
         </a>
       </div>
 
-      {/* Experience */}
       <Experience />
 
-      {/* Skills */}
-      <h3 style={{ marginTop: "80px", fontSize: "24px" }}>Skills.</h3>
+      <EducationComponent/>
+
+      <h2 style={{ marginTop: "80px", fontSize: "22px" }}>Skills.</h2>
 
       <div style={skillsGrid}>
-        <SkillBlock title="Languages" items="Java, Golang, TypeScript" />
-        <SkillBlock title="Frameworks" items="Spring Boot, Gin, Fiber" />
-        <SkillBlock title="Databases" items="PostgreSQL, MySQL, Redis" />
-        <SkillBlock title="Cloud" items="AWS, Docker, GCP" />
-        <SkillBlock
-          title="Others"
-          items="Kafka, Git, GitHub, Grafana, Prometheus"
-        />
+        {Object.entries(groupedSkills).map(([category, items]) => (
+          <SkillBlock
+            key={category}
+            title={category}
+            items={(items as string[]).join(", ")}
+          />
+        ))}
       </div>
     </section>
   );
