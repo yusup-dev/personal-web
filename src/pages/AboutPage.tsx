@@ -7,7 +7,7 @@ import type { Skill } from "../types/skill";
 import EducationComponent from "../components/Education";
 import Loader from "../components/Loader";
 
-const About = () => {
+const AboutPage = () => {
   const [about, setAbout] = useState<About | null>(null);
   const [skills, setSkills] = useState<Skill[]>([]);
 
@@ -30,7 +30,7 @@ const About = () => {
   if (!about) {
     return <Loader/>;
   }
-  
+
   const groupedSkills = skills.reduce((acc: Record<string, string[]>, skill) => {
   if (!acc[skill.category]) {
     acc[skill.category] = [];
@@ -100,4 +100,4 @@ const skillsGrid = {
   marginTop: "32px",
 };
 
-export default About;
+export default AboutPage;

@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { FiArrowUpRight } from "react-icons/fi";
-import type About from "./About";
 import { getAbout } from "../api/apiClient";
 import Blogs from "./Blogs";
 import Loader from "../components/Loader";
+import type { About } from "../types/about";
 
 const Home = () => {
   const [about, setAbout] = useState<About | null>(null);
