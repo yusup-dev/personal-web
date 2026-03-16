@@ -4,4 +4,5 @@ export type About = {
   shortDescription: string
   description: string
   contactLink: string
+  resumeUrl: string
 }

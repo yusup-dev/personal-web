@@ -64,7 +64,7 @@ const BlogDetail = () => {
       </p>
 
       <img
-        src={`${import.meta.env.VITE_API_URL}/posts/${blog.id}/image`}
+        src={blog.image}
         alt={blog.title}
         style={{
           width: "100%",

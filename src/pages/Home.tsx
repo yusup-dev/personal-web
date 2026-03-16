@@ -33,7 +33,7 @@ const Home = () => {
         className="muted"
         style={{ marginTop: "20px", fontSize: "18px", lineHeight: 1.6 }}
       >
-        {about.description}
+        {about.shortDescription}
       </p>
 
       <div
@@ -44,7 +44,7 @@ const Home = () => {
           fontSize: "16px",
         }}
       >
-        <a href={`${import.meta.env.VITE_API_URL}/about/1/download`}>
+        <a href={about.resumeUrl}>
           <FiArrowUpRight className="icon" style={{ marginRight: "5px" }} />
           resume
         </a>

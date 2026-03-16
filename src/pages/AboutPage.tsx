@@ -56,8 +56,8 @@ const AboutPage = () => {
           fontSize: "16px",
         }}
       >
-        <a href={`${import.meta.env.VITE_API_URL}/about/1/download`}>
-          <FiArrowUpRight style={{ marginRight: "5px" }} />
+        <a href={about.resumeUrl}>
+          <FiArrowUpRight className="icon" style={{ marginRight: "5px" }} />
           resume
         </a>
 
