@@ -53,6 +53,7 @@ const AdminDashboard = () => {
   const [editingItem, setEditingItem] = useState<any>(null);
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isNew, setIsNew] = useState(false);
+  const [pdfFile, setPdfFile] = useState<File | null>(null);
 
   useEffect(() => {
     if (!localStorage.getItem("admin_token")) {
@@ -107,10 +108,23 @@ const AdminDashboard = () => {
     e.preventDefault();
     if (!about) return;
     setLoading(true);
+    setError(null);
     try {
-      await updateAbout(1, about);
+      const formData = new FormData();
+      formData.append("title", about.title);
+      formData.append("shortDescription", about.shortDescription);
+      formData.append("description", about.description);
+      formData.append("contactLink", about.contactLink);
+      if (pdfFile) {
+        formData.append("pdf", pdfFile);
+      }
+
+      const res = await updateAbout(1, formData);
+      setAbout(res);
+      setPdfFile(null);
       showSuccess("profile updated.");
     } catch (err: any) {
+      console.error(err);
       setError("failed to update profile.");
     } finally {
       setLoading(false);
@@ -290,14 +304,27 @@ const AdminDashboard = () => {
                   />
                 </div>
                 <div style={formGroupStyle}>
-                  <label style={labelStyle}>resume url</label>
+                  <label style={labelStyle}>resume pdf file</label>
                   <input
-                    type="text"
-                    value={about.resumeUrl}
-                    onChange={(e) => setAbout({ ...about, resumeUrl: e.target.value })}
-                    style={inputStyle}
-                    required
+                    type="file"
+                    accept=".pdf"
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files[0]) {
+                        setPdfFile(e.target.files[0]);
+                      }
+                    }}
+                    style={{ color: "#fff", fontSize: "14px", marginTop: "6px" }}
                   />
+                  {about.resumeUrl && (
+                    <a
+                      href={`${import.meta.env.VITE_API_URL}/about/1/download`}
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{ fontSize: "12px", color: "#9ca3af", textDecoration: "underline", alignSelf: "flex-start", marginTop: "4px" }}
+                    >
+                      view current resume
+                    </a>
+                  )}
                 </div>
               </div>
 
@@ -622,19 +649,19 @@ const AdminDashboard = () => {
                       [...experiences]
                         .sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime())
                         .map((item) => (
-                        <div key={item.id} style={rowStyle}>
-                          <span style={{ minWidth: "120px", color: "#9ca3af" }}>{item.company}</span>
-                          <span style={{ flex: 1 }}>{item.position}</span>
-                          <div style={{ display: "flex", gap: "16px" }}>
-                            <button onClick={() => openFormEdit(item)} style={plainButtonStyle}>
-                              [edit]
-                            </button>
-                            <button onClick={() => handleDelete(item.id!)} style={plainDangerStyle}>
-                              [delete]
-                            </button>
+                          <div key={item.id} style={rowStyle}>
+                            <span style={{ minWidth: "120px", color: "#9ca3af" }}>{item.company}</span>
+                            <span style={{ flex: 1 }}>{item.position}</span>
+                            <div style={{ display: "flex", gap: "16px" }}>
+                              <button onClick={() => openFormEdit(item)} style={plainButtonStyle}>
+                                [edit]
+                              </button>
+                              <button onClick={() => handleDelete(item.id!)} style={plainDangerStyle}>
+                                [delete]
+                              </button>
+                            </div>
                           </div>
-                        </div>
-                      ))}
+                        ))}
 
                     {activeTab === "educations" &&
                       educations.map((item) => (

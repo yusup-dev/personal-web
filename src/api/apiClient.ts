@@ -64,9 +64,13 @@ export const login = async (email: string, password: string): Promise<{ token: s
   throw new Error("Invalid login response: missing token");
 };
 
-export const updateAbout = async (id: number, about: Partial<About>): Promise<About> => {
-  const response = await axiosClient.patch(`/about/${id}`, about);
-  return response.data;
+export const updateAbout = async (id: number, data: FormData): Promise<About> => {
+  const response = await axiosClient.patch(`/about/${id}`, data, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return parseApiResponse(response.data, aboutSchema, ["updatedAbout", "about"]);
 };
 
 export const createSkill = async (skill: Omit<Skill, "id">): Promise<Skill> => {

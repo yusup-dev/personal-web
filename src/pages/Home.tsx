@@ -39,7 +39,7 @@ const Home = () => {
           fontSize: "16px",
         }}
       >
-        <a href={about.resumeUrl}>
+        <a href={`${import.meta.env.VITE_API_URL}/about/1/download`} download="resume.pdf" target="_blank" rel="noopener noreferrer">
           <FiArrowUpRight className="icon" style={{ marginRight: "5px" }} />
           resume
         </a>
