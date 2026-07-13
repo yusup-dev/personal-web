@@ -32,35 +32,35 @@ const Login = () => {
   };
 
   return (
-    <section style={{ maxWidth: "400px", marginTop: "80px", color: "#fff" }}>
+    <section style={{ maxWidth: "400px", marginTop: "80px", color: "var(--fg-strong)" }}>
       <h2 style={{ fontSize: "22px", marginBottom: "24px" }}>Login.</h2>
 
-      {error && <p style={{ color: "#f87171", fontSize: "14px", marginBottom: "20px" }}>{error}</p>}
+      {error && <p style={{ color: "var(--danger)", fontSize: "14px", marginBottom: "20px" }}>{error}</p>}
 
       <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
         <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-          <label style={{ fontSize: "14px", color: "#9ca3af" }}>Email</label>
+          <label style={{ fontSize: "14px", color: "var(--muted)" }}>Email</label>
           <input
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
             style={inputStyle}
-            onFocus={(e) => (e.target.style.borderBottomColor = "#fff")}
-            onBlur={(e) => (e.target.style.borderBottomColor = "rgba(255, 255, 255, 0.2)")}
+            onFocus={(e) => (e.target.style.borderBottomColor = "var(--fg-strong)")}
+            onBlur={(e) => (e.target.style.borderBottomColor = "var(--border-input)")}
           />
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-          <label style={{ fontSize: "14px", color: "#9ca3af" }}>Password</label>
+          <label style={{ fontSize: "14px", color: "var(--muted)" }}>Password</label>
           <input
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
             style={inputStyle}
-            onFocus={(e) => (e.target.style.borderBottomColor = "#fff")}
-            onBlur={(e) => (e.target.style.borderBottomColor = "rgba(255, 255, 255, 0.2)")}
+            onFocus={(e) => (e.target.style.borderBottomColor = "var(--fg-strong)")}
+            onBlur={(e) => (e.target.style.borderBottomColor = "var(--border-input)")}
           />
         </div>
 
@@ -75,9 +75,9 @@ const Login = () => {
 const inputStyle: React.CSSProperties = {
   background: "transparent",
   border: "none",
-  borderBottom: "1px solid rgba(255, 255, 255, 0.2)",
+  borderBottom: "1px solid var(--border-input)",
   padding: "8px 0",
-  color: "#fff",
+  color: "var(--fg-strong)",
   fontSize: "16px",
   outline: "none",
   transition: "border-color 0.2s ease",
@@ -85,8 +85,8 @@ const inputStyle: React.CSSProperties = {
 
 const buttonStyle: React.CSSProperties = {
   background: "transparent",
-  border: "1px solid rgba(255, 255, 255, 0.4)",
-  color: "#fff",
+  border: "1px solid var(--border-strong)",
+  color: "var(--fg-strong)",
   padding: "8px 20px",
   fontSize: "14px",
   cursor: "pointer",

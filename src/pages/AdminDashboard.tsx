@@ -229,7 +229,7 @@ const AdminDashboard = () => {
   };
 
   return (
-    <section style={{ maxWidth: "900px", marginTop: "80px", color: "#fff" }}>
+    <section style={{ maxWidth: "900px", marginTop: "64px", color: "var(--fg-strong)" }}>
       {/* Header */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: "32px" }}>
         <h2 style={{ fontSize: "22px" }}>Dashboard.</h2>
@@ -239,11 +239,11 @@ const AdminDashboard = () => {
       </div>
 
       {/* Notifications */}
-      {success && <p style={{ color: "#34d399", fontSize: "14px", marginBottom: "20px" }}>{success}</p>}
-      {error && <p style={{ color: "#f87171", fontSize: "14px", marginBottom: "20px" }}>{error}</p>}
+      {success && <p style={{ color: "var(--success)", fontSize: "14px", marginBottom: "20px" }}>{success}</p>}
+      {error && <p style={{ color: "var(--danger)", fontSize: "14px", marginBottom: "20px" }}>{error}</p>}
 
       {/* Navigation (Simple links) */}
-      <div style={{ display: "flex", gap: "20px", flexWrap: "wrap", marginBottom: "40px", borderBottom: "1px solid rgba(255,255,255,0.1)", paddingBottom: "16px" }}>
+      <div style={{ display: "flex", gap: "20px", flexWrap: "wrap", marginBottom: "40px", borderBottom: "1px solid var(--border)", paddingBottom: "16px" }}>
         {(["about", "skills", "experiences", "educations", "portfolios", "blogs"] as Tab[]).map((tab) => (
           <button
             key={tab}
@@ -256,7 +256,7 @@ const AdminDashboard = () => {
             style={{
               background: "transparent",
               border: "none",
-              color: activeTab === tab ? "#fff" : "#9ca3af",
+              color: activeTab === tab ? "var(--fg-strong)" : "var(--muted)",
               fontSize: "14px",
               cursor: "pointer",
               padding: 0,
@@ -330,14 +330,14 @@ const AdminDashboard = () => {
                         setPdfFile(e.target.files[0]);
                       }
                     }}
-                    style={{ color: "#fff", fontSize: "14px", marginTop: "6px" }}
+                    style={{ color: "var(--fg-strong)", fontSize: "14px", marginTop: "6px" }}
                   />
                   {about.resumeUrl && (
                     <a
                       href={`${import.meta.env.VITE_API_URL}/about/1/download`}
                       target="_blank"
                       rel="noreferrer"
-                      style={{ fontSize: "12px", color: "#9ca3af", textDecoration: "underline", alignSelf: "flex-start", marginTop: "4px" }}
+                      style={{ fontSize: "12px", color: "var(--muted)", textDecoration: "underline", alignSelf: "flex-start", marginTop: "4px" }}
                     >
                       view current resume
                     </a>
@@ -604,12 +604,12 @@ const AdminDashboard = () => {
                               setBlogImageFile(e.target.files[0]);
                             }
                           }}
-                          style={{ color: "#fff", fontSize: "14px", marginTop: "6px" }}
+                          style={{ color: "var(--fg-strong)", fontSize: "14px", marginTop: "6px" }}
                           required={isNew}
                         />
                         {editingItem.image && (
                           <div style={{ marginTop: "8px" }}>
-                            <span style={{ fontSize: "12px", color: "#9ca3af" }}>current image:</span>
+                            <span style={{ fontSize: "12px", color: "var(--muted)" }}>current image:</span>
                             <img
                               src={getImageUrl(editingItem.image)}
                               alt="blog"
@@ -670,7 +670,7 @@ const AdminDashboard = () => {
                     {activeTab === "skills" &&
                       skills.map((item) => (
                         <div key={item.id} style={rowStyle}>
-                          <span style={{ minWidth: "120px", color: "#9ca3af" }}>{item.category}</span>
+                          <span style={{ minWidth: "120px", color: "var(--muted)" }}>{item.category}</span>
                           <span style={{ flex: 1 }}>{item.name}</span>
                           <div style={{ display: "flex", gap: "16px" }}>
                             <button onClick={() => openFormEdit(item)} style={plainButtonStyle}>
@@ -688,7 +688,7 @@ const AdminDashboard = () => {
                         .sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime())
                         .map((item) => (
                           <div key={item.id} style={rowStyle}>
-                            <span style={{ minWidth: "120px", color: "#9ca3af" }}>{item.company}</span>
+                            <span style={{ minWidth: "120px", color: "var(--muted)" }}>{item.company}</span>
                             <span style={{ flex: 1 }}>{item.position}</span>
                             <div style={{ display: "flex", gap: "16px" }}>
                               <button onClick={() => openFormEdit(item)} style={plainButtonStyle}>
@@ -706,7 +706,7 @@ const AdminDashboard = () => {
                         .sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime())
                         .map((item) => (
                         <div key={item.id} style={rowStyle}>
-                          <span style={{ minWidth: "120px", color: "#9ca3af" }}>{item.school}</span>
+                          <span style={{ minWidth: "120px", color: "var(--muted)" }}>{item.school}</span>
                           <span style={{ flex: 1 }}>{item.degree}</span>
                           <div style={{ display: "flex", gap: "16px" }}>
                             <button onClick={() => openFormEdit(item)} style={plainButtonStyle}>
@@ -724,7 +724,7 @@ const AdminDashboard = () => {
                         .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
                         .map((item) => (
                         <div key={item.id} style={rowStyle}>
-                          <span style={{ minWidth: "120px", color: "#9ca3af" }}>{item.createdAt}</span>
+                          <span style={{ minWidth: "120px", color: "var(--muted)" }}>{item.createdAt}</span>
                           <span style={{ flex: 1 }}>{item.title}</span>
                           <div style={{ display: "flex", gap: "16px" }}>
                             <button onClick={() => openFormEdit(item)} style={plainButtonStyle}>
@@ -742,7 +742,7 @@ const AdminDashboard = () => {
                         .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
                         .map((item) => (
                         <div key={item.id} style={rowStyle}>
-                          <span style={{ minWidth: "120px", color: "#9ca3af" }}>
+                          <span style={{ minWidth: "120px", color: "var(--muted)" }}>
                             {new Date(item.createdAt).toLocaleDateString()}
                           </span>
                           <span style={{ flex: 1 }}>{item.title}</span>
@@ -774,7 +774,7 @@ const AdminDashboard = () => {
 const plainButtonStyle: React.CSSProperties = {
   background: "transparent",
   border: "none",
-  color: "#9ca3af",
+  color: "var(--muted)",
   fontSize: "14px",
   cursor: "pointer",
   padding: 0,
@@ -784,7 +784,7 @@ const plainButtonStyle: React.CSSProperties = {
 const plainDangerStyle: React.CSSProperties = {
   background: "transparent",
   border: "none",
-  color: "#f87171",
+  color: "var(--danger)",
   fontSize: "14px",
   cursor: "pointer",
   padding: 0,
@@ -793,8 +793,8 @@ const plainDangerStyle: React.CSSProperties = {
 
 const actionButtonStyle: React.CSSProperties = {
   background: "transparent",
-  border: "1px solid rgba(255, 255, 255, 0.4)",
-  color: "#fff",
+  border: "1px solid var(--border-strong)",
+  color: "var(--fg-strong)",
   padding: "8px 18px",
   fontSize: "13px",
   cursor: "pointer",
@@ -806,7 +806,7 @@ const rowStyle: React.CSSProperties = {
   alignItems: "center",
   fontSize: "15px",
   paddingBottom: "14px",
-  borderBottom: "1px solid rgba(255, 255, 255, 0.05)",
+  borderBottom: "1px solid var(--border)",
 };
 
 const formGridStyle: React.CSSProperties = {
@@ -823,25 +823,25 @@ const formGroupStyle: React.CSSProperties = {
 
 const labelStyle: React.CSSProperties = {
   fontSize: "13px",
-  color: "#9ca3af",
+  color: "var(--muted)",
 };
 
 const inputStyle: React.CSSProperties = {
   background: "transparent",
   border: "none",
-  borderBottom: "1px solid rgba(255, 255, 255, 0.15)",
+  borderBottom: "1px solid var(--border-input)",
   padding: "8px 0",
-  color: "#fff",
+  color: "var(--fg-strong)",
   fontSize: "15px",
   outline: "none",
 };
 
 const textareaStyle: React.CSSProperties = {
   background: "transparent",
-  border: "1px solid rgba(255, 255, 255, 0.15)",
+  border: "1px solid var(--border-input)",
   borderRadius: "4px",
   padding: "10px",
-  color: "#fff",
+  color: "var(--fg-strong)",
   fontSize: "15px",
   outline: "none",
   fontFamily: "Inter, system-ui, sans-serif",

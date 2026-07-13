@@ -42,6 +42,11 @@
 
   /* Spinner */
   --spinner-track: #2d2d2d;
+
+  /* Alert / Input Status */
+  --danger:       #ef4444;
+  --success:      #10b981;
+  --border-input: rgba(255, 255, 255, 0.15);
 }
 
 @media (prefers-color-scheme: light) {
@@ -81,6 +86,11 @@
     --code-inline-border: rgba(0, 0, 0, 0.08);
 
     --spinner-track: #e5e7eb;
+
+    /* Alert / Input Status */
+    --danger:       #dc2626;
+    --success:      #16a34a;
+    --border-input: rgba(0, 0, 0, 0.15);
   }
 }
 
