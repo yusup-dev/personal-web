@@ -1,33 +1,28 @@
-import { useEffect, useState } from "react";
 import { FiArrowUpRight } from "react-icons/fi";
 import { getAbout } from "../api/apiClient";
+import { useQuery } from "../hooks/useQuery";
 import Blogs from "./Blogs";
 import Loader from "../components/Loader";
 import type { About } from "../types/about";
 
+const defaultAbout: About = {
+  title: "",
+  shortDescription: "",
+  description: "",
+  contactLink: "",
+  resumeUrl: "",
+};
+
 const Home = () => {
-  const [about, setAbout] = useState<About | null>(null);
+  const { data: about, loading } = useQuery(getAbout, defaultAbout, "about");
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const aboutData = await getAbout();
-        setAbout(aboutData);
-      } catch (error) {
-        console.error("Failed to fetch data:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  if (!about) {
+  if (loading) {
     return <Loader />;
   }
 
   return (
     <section style={{ marginTop: "80px" }}>
-      <h1 style={{ fontSize: "36px", fontWeight: 600 }}>Muhamad Yusup</h1>
+      <h1 style={{ fontSize: "36px", fontWeight: 600 }}>{about.title}</h1>
 
       <p
         className="muted"

@@ -1,33 +1,27 @@
 import { FiArrowUpRight } from "react-icons/fi";
 import Experience from "../components/Experience";
-import type { About } from "../types/about";
-import { useEffect, useState } from "react";
 import { getAbout, getSkills } from "../api/apiClient";
-import type { Skill } from "../types/skill";
+import { useQuery } from "../hooks/useQuery";
 import EducationComponent from "../components/Education";
 import Loader from "../components/Loader";
+import type { About } from "../types/about";
+import type { Skill } from "../types/skill";
+
+const defaultAbout: About = {
+  title: "",
+  shortDescription: "",
+  description: "",
+  contactLink: "",
+  resumeUrl: "",
+};
+
+const defaultSkills: Skill[] = [];
 
 const AboutPage = () => {
-  const [about, setAbout] = useState<About | null>(null);
-  const [skills, setSkills] = useState<Skill[]>([]);
+  const { data: about, loading: aboutLoading } = useQuery(getAbout, defaultAbout, "about");
+  const { data: skills, loading: skillsLoading } = useQuery(getSkills, defaultSkills, "skills");
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const aboutData = await getAbout();
-        setAbout(aboutData);
-
-        const skillsData = await getSkills();
-        setSkills(skillsData);
-      } catch (error) {
-        console.error("Failed to fetch data:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  if (!about) {
+  if (aboutLoading || skillsLoading) {
     return <Loader/>;
   }
 
@@ -88,16 +82,44 @@ const AboutPage = () => {
 
 const SkillBlock = ({ title, items }: { title: string; items: string }) => (
   <div>
-    <h4 style={{ marginBottom: "8px" }}>{title}</h4>
-    <p style={{ opacity: 0.7 }}>{items}</p>
+    <h4 style={{ marginBottom: "12px", fontSize: "15px", fontWeight: 600 }}>{title}</h4>
+    <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+      {items.split(",").map((item) => (
+        <span
+          key={item}
+          style={{
+            fontSize: "12px",
+            fontFamily: 'Consolas, "Fira Code", "JetBrains Mono", monospace',
+            backgroundColor: "rgba(255, 255, 255, 0.05)",
+            border: "1px solid rgba(255, 255, 255, 0.08)",
+            padding: "4px 10px",
+            borderRadius: "6px",
+            color: "#eaeaea",
+            opacity: 0.85,
+            transition: "all 0.2s ease",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.1)";
+            e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.15)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.05)";
+            e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.08)";
+          }}
+        >
+          {item.trim()}
+        </span>
+      ))}
+    </div>
   </div>
 );
 
 const skillsGrid = {
   display: "grid",
   gridTemplateColumns: "repeat(2, minmax(0, 1fr))",
-  gap: "40px",
-  marginTop: "32px",
+  gap: "32px",
+  marginTop: "24px",
 };
+
 
 export default AboutPage;

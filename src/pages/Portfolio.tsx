@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
 import { getPortfolio } from "../api/apiClient";
-import type { Portfolio } from "../types/portfolio";
+import { useQuery } from "../hooks/useQuery";
 import { FiArrowUpRight } from "react-icons/fi";
 import Loader from "../components/Loader";
 
@@ -13,23 +12,7 @@ const formatDate = (date: string) => {
 };
 
 const Portfolios = () => {
-  const [portfolios, setPortfolios] = useState<Portfolio[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchPortfolios = async () => {
-      try {
-        const res = await getPortfolio();
-        setPortfolios(res);
-      } catch (error) {
-        console.error("Failed to fetch portfolios", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchPortfolios();
-  }, []);
+  const { data: portfolios, loading } = useQuery(getPortfolio, [], "portfolios");
 
   if (loading) {
     return <Loader />;

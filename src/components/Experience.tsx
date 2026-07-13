@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
 import { getExperiences } from "../api/apiClient";
-import type { Experience } from "../types/experience";
+import { useQuery } from "../hooks/useQuery";
 import Loader from "./Loader";
 
 const formatDate = (date: string) => {
@@ -11,23 +10,7 @@ const formatDate = (date: string) => {
 };
 
 const ExperienceComponent = () => {
-  const [experiences, setExperiences] = useState<Experience[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchExperiences = async () => {
-      try {
-        const data = await getExperiences();
-        setExperiences(data);
-      } catch (error) {
-        console.error("Failed to fetch experiences:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchExperiences();
-  }, []);
+  const { data: experiences, loading } = useQuery(getExperiences, [], "experiences");
 
   if (loading) {
     return <Loader />;

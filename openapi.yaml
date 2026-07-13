@@ -1,0 +1,361 @@
+openapi: 3.1.0
+info:
+  title: Personal Portfolio API
+  version: 1.0.0
+  description: |
+    REST API contract for the personal portfolio frontend.
+
+    **Canonical response envelope** (target shape for all endpoints):
+
+    ```json
+    {
+      "data": <resource>,
+      "meta": { "total": 10 }
+    }
+    ```
+
+    Legacy nested keys (e.g. `data.experience`) are still accepted by the frontend
+    adapter during migration.
+
+servers:
+  - url: https://your-api.vercel.app/api
+    description: Production
+  - url: http://localhost:3000/api
+    description: Local development
+
+tags:
+  - name: Profile
+  - name: Content
+
+paths:
+  /about:
+    get:
+      tags: [Profile]
+      summary: Get profile / about information
+      operationId: getAbout
+      responses:
+        "200":
+          description: Profile data
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AboutResponse"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalError"
+
+  /skills:
+    get:
+      tags: [Profile]
+      summary: List skills grouped by category
+      operationId: getSkills
+      responses:
+        "200":
+          description: Skill list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SkillListResponse"
+
+  /experiences:
+    get:
+      tags: [Profile]
+      summary: List work experiences
+      operationId: getExperiences
+      responses:
+        "200":
+          description: Experience list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExperienceListResponse"
+
+  /educations:
+    get:
+      tags: [Profile]
+      summary: List education history
+      operationId: getEducations
+      responses:
+        "200":
+          description: Education list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EducationListResponse"
+
+  /portfolios:
+    get:
+      tags: [Content]
+      summary: List portfolio projects
+      operationId: getPortfolios
+      responses:
+        "200":
+          description: Portfolio list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PortfolioListResponse"
+
+  /posts:
+    get:
+      tags: [Content]
+      summary: List blog posts
+      operationId: getPosts
+      responses:
+        "200":
+          description: Blog post list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BlogListResponse"
+
+  /posts/{id}:
+    get:
+      tags: [Content]
+      summary: Get a blog post by ID
+      operationId: getPostById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        "200":
+          description: Blog post detail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BlogResponse"
+        "404":
+          $ref: "#/components/responses/NotFound"
+
+components:
+  responses:
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+    InternalError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+
+  schemas:
+    ErrorResponse:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message]
+          properties:
+            code:
+              type: string
+              example: NOT_FOUND
+            message:
+              type: string
+              example: Resource not found
+
+    Meta:
+      type: object
+      additionalProperties: true
+      properties:
+        total:
+          type: integer
+          example: 10
+
+    About:
+      type: object
+      required:
+        - title
+        - shortDescription
+        - description
+        - contactLink
+        - resumeUrl
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+          example: Muhamad Yusup
+        shortDescription:
+          type: string
+        description:
+          type: string
+        contactLink:
+          type: string
+          format: uri
+        resumeUrl:
+          type: string
+          format: uri
+
+    Skill:
+      type: object
+      required: [id, name, category]
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        category:
+          type: string
+
+    Experience:
+      type: object
+      required: [position, company, location, startDate, description]
+      properties:
+        id:
+          type: integer
+        position:
+          type: string
+        company:
+          type: string
+        location:
+          type: string
+        startDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+        description:
+          type: string
+
+    Education:
+      type: object
+      required: [degree, school, location, startDate, gpa, description]
+      properties:
+        id:
+          type: integer
+        degree:
+          type: string
+        school:
+          type: string
+        location:
+          type: string
+        startDate:
+          type: string
+          format: date-time
+        endDate:
+          type: string
+          format: date-time
+        gpa:
+          type: string
+        description:
+          type: string
+
+    Portfolio:
+      type: object
+      required: [title, github, article, createdAt]
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        github:
+          type: string
+          format: uri
+        article:
+          type: string
+          format: uri
+        createdAt:
+          type: string
+          format: date-time
+
+    Blog:
+      type: object
+      required: [title, content, image, createdAt]
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        content:
+          type: string
+          description: Markdown content
+        image:
+          type: string
+          format: uri
+        createdAt:
+          type: string
+          format: date-time
+
+    AboutResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          $ref: "#/components/schemas/About"
+        meta:
+          $ref: "#/components/schemas/Meta"
+
+    SkillListResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Skill"
+        meta:
+          $ref: "#/components/schemas/Meta"
+
+    ExperienceListResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Experience"
+        meta:
+          $ref: "#/components/schemas/Meta"
+
+    EducationListResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Education"
+        meta:
+          $ref: "#/components/schemas/Meta"
+
+    PortfolioListResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Portfolio"
+        meta:
+          $ref: "#/components/schemas/Meta"
+
+    BlogListResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/Blog"
+        meta:
+          $ref: "#/components/schemas/Meta"
+
+    BlogResponse:
+      type: object
+      required: [data]
+      properties:
+        data:
+          $ref: "#/components/schemas/Blog"
+        meta:
+          $ref: "#/components/schemas/Meta"

@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
-import type { Blog } from "../types/blog";
 import { getBlog } from "../api/apiClient";
+import { useQuery } from "../hooks/useQuery";
 import Loader from "../components/Loader";
 
 const formatDate = (date: string) => {
@@ -16,23 +15,7 @@ type BlogsProps = {
 };
 
 const Blogs = ({ limit }: BlogsProps) => {
-  const [blogs, setBlogs] = useState<Blog[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchBlogs = async () => {
-      try {
-        const data = await getBlog();
-        setBlogs(data);
-      } catch (error) {
-        console.error("Failed to fetch blogs", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchBlogs();
-  }, []);
+  const { data: blogs, loading } = useQuery(getBlog, [], "blogs");
 
   const post = limit ? blogs.slice(0, limit) : blogs;
 

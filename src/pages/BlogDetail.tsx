@@ -1,12 +1,21 @@
-import { useEffect, useState } from "react";
+import { useCallback } from "react";
 import { useParams } from "react-router-dom";
-import type { Blog } from "../types/blog";
 import { getBlogById } from "../api/apiClient";
+import { useQuery } from "../hooks/useQuery";
 
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
 import Loader from "../components/Loader";
+import type { Blog } from "../types/blog";
+
+const defaultFallbackBlog: Blog = {
+  id: 0,
+  title: "Blog Not Found",
+  content: "The requested blog post could not be loaded from the server.",
+  image: "https://images.unsplash.com/photo-1594322436404-5a0526db4d13?w=800&auto=format&fit=crop&q=60",
+  createdAt: new Date().toISOString(),
+};
 
 const formatDate = (date: string) => {
   return new Date(date).toLocaleDateString("en-US", {
@@ -18,32 +27,18 @@ const formatDate = (date: string) => {
 
 const BlogDetail = () => {
   const { id } = useParams();
+  const blogId = Number(id || 0);
 
-  const [blog, setBlog] = useState<Blog | null>(null);
-  const [loading, setLoading] = useState(true);
+  const fallbackBlog = defaultFallbackBlog;
 
-  useEffect(() => {
-    const fetchBlog = async () => {
-      try {
-        if (!id) return;
-
-        const data = await getBlogById(Number(id));
-        setBlog(data);
-      } catch (error) {
-        console.error("Failed to fetch blog", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchBlog();
-  }, [id]);
+  const fetchFn = useCallback(() => getBlogById(blogId), [blogId]);
+  const { data: blog, loading, error } = useQuery(fetchFn, fallbackBlog, `blog_${blogId}`);
 
   if (loading) {
     return <Loader />;
   }
 
-  if (!blog) {
+  if (error && blog.id === 0) {
     return (
       <p style={{ color: "#9ca3af", marginTop: "80px" }}>Blog not found!!</p>
     );

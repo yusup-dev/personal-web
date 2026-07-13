@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
-import {getEducations } from "../api/apiClient";
-import type { Education } from "../types/education";
+import { getEducations } from "../api/apiClient";
+import { useQuery } from "../hooks/useQuery";
 import Loader from "./Loader";
 
 const formatDate = (date: string) => {
@@ -11,23 +10,7 @@ const formatDate = (date: string) => {
 };
 
 const EducationComponent = () => {
-  const [educations, setEducations] = useState<Education[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchEducation = async () => {
-      try {
-        const data = await getEducations();
-        setEducations(data);
-      } catch (error) {
-        console.error("Failed to fetch educations:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchEducation();
-  }, []);
+  const { data: educations, loading } = useQuery(getEducations, [], "educations");
 
   if (loading) {
     return <Loader/>;
