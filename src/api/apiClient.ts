@@ -69,6 +69,12 @@ export const getAllVisitors = async (page = 1, limit = 20): Promise<any> => {
   };
 };
 
+export const trackVisitor = async (path: string): Promise<any> => {
+  const response = await axiosClient.post("/visitors/track", { path });
+  return response.data;
+};
+
+
 export const login = async (email: string, password: string): Promise<{ token: string }> => {
   const response = await axiosClient.post("/auth/login", { email, password });
   const data = response.data;

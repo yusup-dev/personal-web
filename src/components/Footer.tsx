@@ -1,10 +1,6 @@
 import { useEffect, useState } from "react";
 import axiosClient from "../api/axiosClient";
-
-// Namespace unik untuk site ini — ganti jika ingin reset counter
-const COUNTER_NAMESPACE = "muhamadyusup-personal";
-const COUNTER_KEY = "visitors";
-const COUNTER_API = `https://api.counterapi.dev/v1/${COUNTER_NAMESPACE}/${COUNTER_KEY}`;
+import { trackVisitor } from "../api/apiClient";
 
 const Footer = () => {
   const [apiStatus, setApiStatus] = useState<"checking" | "online" | "offline">("checking");
@@ -25,35 +21,33 @@ const Footer = () => {
 
   // Real visitor counter
   useEffect(() => {
-    const trackVisitor = async () => {
+    const trackVisitorCall = async () => {
       try {
-        const alreadyCounted = sessionStorage.getItem("visit_counted");
+        const path = window.location.pathname;
+        const alreadyCountedKey = `visit_counted_${path}`;
+        const alreadyCounted = sessionStorage.getItem(alreadyCountedKey);
 
-        let res: Response;
+        // Record visit if not yet counted in this session
         if (!alreadyCounted) {
-          // New session — increment counter
-          res = await fetch(`${COUNTER_API}/up`, { method: "GET" });
-          sessionStorage.setItem("visit_counted", "1");
-        } else {
-          // Returning visitor in same session — just fetch current count
-          res = await fetch(COUNTER_API);
+          await trackVisitor(path);
+          sessionStorage.setItem(alreadyCountedKey, "1");
         }
 
-        if (res.ok) {
-          const data = await res.json();
-          // counterapi.dev returns { count: number }
-          const count = data?.count ?? data?.value ?? null;
-          if (typeof count === "number") {
-            setVisitorCount(count);
-          }
+        // Fetch updated stats to display count in Footer
+        const stats = await axiosClient.get("/visitors/stats");
+        const total = stats.data?.data?.totalAllTime ?? stats.data?.totalAllTime;
+        if (typeof total === "number") {
+          setVisitorCount(total);
         }
-      } catch {
-        // Silently fail — keep visitorCount null (hidden)
+      } catch (err) {
+        console.error("Failed to track visitor:", err);
       }
     };
 
-    trackVisitor();
+    trackVisitorCall();
   }, []);
+
+
 
   const formatCount = (n: number) =>
     n.toLocaleString("en-US");
