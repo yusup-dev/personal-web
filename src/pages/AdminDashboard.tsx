@@ -309,7 +309,7 @@ const AdminDashboard = () => {
                 />
               </div>
 
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+              <div className="admin-grid">
                 <div style={formGroupStyle}>
                   <label style={labelStyle}>contact link</label>
                   <input
@@ -389,7 +389,7 @@ const AdminDashboard = () => {
 
                   {activeTab === "experiences" && (
                     <>
-                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+                      <div className="admin-grid">
                         <div style={formGroupStyle}>
                           <label style={labelStyle}>position</label>
                           <input
@@ -411,7 +411,7 @@ const AdminDashboard = () => {
                           />
                         </div>
                       </div>
-                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+                      <div className="admin-grid">
                         <div style={formGroupStyle}>
                           <label style={labelStyle}>start date</label>
                           <input
@@ -457,7 +457,7 @@ const AdminDashboard = () => {
 
                   {activeTab === "educations" && (
                     <>
-                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+                      <div className="admin-grid">
                         <div style={formGroupStyle}>
                           <label style={labelStyle}>school / university</label>
                           <input
@@ -479,7 +479,7 @@ const AdminDashboard = () => {
                           />
                         </div>
                       </div>
-                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+                      <div className="admin-grid">
                         <div style={formGroupStyle}>
                           <label style={labelStyle}>start date</label>
                           <input
@@ -500,7 +500,7 @@ const AdminDashboard = () => {
                           />
                         </div>
                       </div>
-                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+                      <div className="admin-grid">
                         <div style={formGroupStyle}>
                           <label style={labelStyle}>location</label>
                           <input
@@ -547,7 +547,7 @@ const AdminDashboard = () => {
                           required
                         />
                       </div>
-                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
+                      <div className="admin-grid">
                         <div style={formGroupStyle}>
                           <label style={labelStyle}>github url</label>
                           <input
@@ -668,94 +668,104 @@ const AdminDashboard = () => {
 
                   <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                     {activeTab === "skills" &&
-                      skills.map((item) => (
-                        <div key={item.id} style={rowStyle}>
-                          <span style={{ minWidth: "120px", color: "var(--muted)" }}>{item.category}</span>
-                          <span style={{ flex: 1 }}>{item.name}</span>
-                          <div style={{ display: "flex", gap: "16px" }}>
-                            <button onClick={() => openFormEdit(item)} style={plainButtonStyle}>
-                              [edit]
-                            </button>
-                            <button onClick={() => handleDelete(item.id)} style={plainDangerStyle}>
-                              [delete]
-                            </button>
-                          </div>
-                        </div>
-                      ))}
+                       skills.map((item) => (
+                         <div key={item.id} className="admin-row">
+                           <div className="admin-row-info">
+                             <span className="admin-row-meta">{item.category}</span>
+                             <span className="admin-row-title">{item.name}</span>
+                           </div>
+                           <div className="admin-row-actions">
+                             <button onClick={() => openFormEdit(item)} style={plainButtonStyle}>
+                               [edit]
+                             </button>
+                             <button onClick={() => handleDelete(item.id)} style={plainDangerStyle}>
+                               [delete]
+                             </button>
+                           </div>
+                         </div>
+                       ))}
 
                     {activeTab === "experiences" &&
                       [...experiences]
                         .sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime())
                         .map((item) => (
-                          <div key={item.id} style={rowStyle}>
-                            <span style={{ minWidth: "120px", color: "var(--muted)" }}>{item.company}</span>
-                            <span style={{ flex: 1 }}>{item.position}</span>
-                            <div style={{ display: "flex", gap: "16px" }}>
-                              <button onClick={() => openFormEdit(item)} style={plainButtonStyle}>
-                                [edit]
-                              </button>
-                              <button onClick={() => handleDelete(item.id!)} style={plainDangerStyle}>
-                                [delete]
-                              </button>
-                            </div>
-                          </div>
+                           <div key={item.id} className="admin-row">
+                             <div className="admin-row-info">
+                               <span className="admin-row-meta">{item.company}</span>
+                               <span className="admin-row-title">{item.position}</span>
+                             </div>
+                             <div className="admin-row-actions">
+                               <button onClick={() => openFormEdit(item)} style={plainButtonStyle}>
+                                 [edit]
+                               </button>
+                               <button onClick={() => handleDelete(item.id!)} style={plainDangerStyle}>
+                                 [delete]
+                               </button>
+                             </div>
+                           </div>
                         ))}
 
                     {activeTab === "educations" &&
                       [...educations]
                         .sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime())
                         .map((item) => (
-                        <div key={item.id} style={rowStyle}>
-                          <span style={{ minWidth: "120px", color: "var(--muted)" }}>{item.school}</span>
-                          <span style={{ flex: 1 }}>{item.degree}</span>
-                          <div style={{ display: "flex", gap: "16px" }}>
-                            <button onClick={() => openFormEdit(item)} style={plainButtonStyle}>
-                              [edit]
-                            </button>
-                            <button onClick={() => handleDelete(item.id!)} style={plainDangerStyle}>
-                              [delete]
-                            </button>
-                          </div>
-                        </div>
-                      ))}
+                         <div key={item.id} className="admin-row">
+                           <div className="admin-row-info">
+                             <span className="admin-row-meta">{item.school}</span>
+                             <span className="admin-row-title">{item.degree}</span>
+                           </div>
+                           <div className="admin-row-actions">
+                             <button onClick={() => openFormEdit(item)} style={plainButtonStyle}>
+                               [edit]
+                             </button>
+                             <button onClick={() => handleDelete(item.id!)} style={plainDangerStyle}>
+                               [delete]
+                             </button>
+                           </div>
+                         </div>
+                        ))}
 
                     {activeTab === "portfolios" &&
                       [...portfolios]
                         .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
                         .map((item) => (
-                        <div key={item.id} style={rowStyle}>
-                          <span style={{ minWidth: "120px", color: "var(--muted)" }}>{item.createdAt}</span>
-                          <span style={{ flex: 1 }}>{item.title}</span>
-                          <div style={{ display: "flex", gap: "16px" }}>
-                            <button onClick={() => openFormEdit(item)} style={plainButtonStyle}>
-                              [edit]
-                            </button>
-                            <button onClick={() => handleDelete(item.id!)} style={plainDangerStyle}>
-                              [delete]
-                            </button>
-                          </div>
-                        </div>
-                      ))}
+                         <div key={item.id} className="admin-row">
+                           <div className="admin-row-info">
+                             <span className="admin-row-meta">{item.createdAt}</span>
+                             <span className="admin-row-title">{item.title}</span>
+                           </div>
+                           <div className="admin-row-actions">
+                             <button onClick={() => openFormEdit(item)} style={plainButtonStyle}>
+                               [edit]
+                             </button>
+                             <button onClick={() => handleDelete(item.id!)} style={plainDangerStyle}>
+                               [delete]
+                             </button>
+                           </div>
+                         </div>
+                        ))}
 
                     {activeTab === "blogs" &&
                       [...blogs]
                         .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
                         .map((item) => (
-                        <div key={item.id} style={rowStyle}>
-                          <span style={{ minWidth: "120px", color: "var(--muted)" }}>
-                            {new Date(item.createdAt).toLocaleDateString()}
-                          </span>
-                          <span style={{ flex: 1 }}>{item.title}</span>
-                          <div style={{ display: "flex", gap: "16px" }}>
-                            <button onClick={() => openFormEdit(item)} style={plainButtonStyle}>
-                              [edit]
-                            </button>
-                            <button onClick={() => handleDelete(item.id!)} style={plainDangerStyle}>
-                              [delete]
-                            </button>
-                          </div>
-                        </div>
-                      ))}
+                         <div key={item.id} className="admin-row">
+                           <div className="admin-row-info">
+                             <span className="admin-row-meta">
+                               {new Date(item.createdAt).toLocaleDateString()}
+                             </span>
+                             <span className="admin-row-title">{item.title}</span>
+                           </div>
+                           <div className="admin-row-actions">
+                             <button onClick={() => openFormEdit(item)} style={plainButtonStyle}>
+                               [edit]
+                             </button>
+                             <button onClick={() => handleDelete(item.id!)} style={plainDangerStyle}>
+                               [delete]
+                             </button>
+                           </div>
+                         </div>
+                        ))}
                     {getActiveListLength() === 0 && (
                       <p style={{ opacity: 0.5, fontSize: "14px" }}>No items found.</p>
                     )}
