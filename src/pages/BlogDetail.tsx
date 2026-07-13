@@ -41,7 +41,27 @@ const BlogDetail = () => {
 
   if (error && blog.id === 0) {
     return (
-      <p style={{ color: "#9ca3af", marginTop: "80px" }}>Blog not found!!</p>
+      <section style={{ marginTop: "80px", color: "#fff" }}>
+        <h2 style={{ fontSize: "28px", fontWeight: 600, marginBottom: "16px" }}>Post Not Found.</h2>
+        <p style={{ color: "#9ca3af", fontSize: "16px", marginBottom: "32px", lineHeight: 1.6 }}>
+          The blog post you are looking for does not exist or has been removed.
+        </p>
+        <a
+          href="/blogs"
+          style={{
+            color: "#fff",
+            border: "1px solid rgba(255, 255, 255, 0.4)",
+            padding: "8px 20px",
+            fontSize: "14px",
+            textDecoration: "none",
+            transition: "border-color 0.2s ease",
+          }}
+          onMouseEnter={(e) => (e.currentTarget.style.borderColor = "#fff")}
+          onMouseLeave={(e) => (e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.4)")}
+        >
+          Back to Blogs
+        </a>
+      </section>
     );
   }
 

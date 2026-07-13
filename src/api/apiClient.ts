@@ -50,3 +50,92 @@ export const getEducations = async (): Promise<Education[]> => {
   const response = await axiosClient.get("/educations");
   return parseApiResponse(response.data, educationListSchema, ["educations", "education"]);
 };
+
+// --- AUTH & CMS MUTATOR ENDPOINTS ---
+
+export const login = async (email: string, password: string): Promise<{ token: string }> => {
+  const response = await axiosClient.post("/auth/login", { email, password });
+  const data = response.data;
+  // Handle various formats of JWT token in envelope
+  if (data?.data?.token) return { token: data.data.token };
+  if (data?.token) return { token: data.token };
+  if (data?.data?.accessToken) return { token: data.data.accessToken };
+  if (data?.accessToken) return { token: data.accessToken };
+  throw new Error("Invalid login response: missing token");
+};
+
+export const updateAbout = async (id: number, about: Partial<About>): Promise<About> => {
+  const response = await axiosClient.patch(`/about/${id}`, about);
+  return response.data;
+};
+
+export const createSkill = async (skill: Omit<Skill, "id">): Promise<Skill> => {
+  const response = await axiosClient.post("/skills", skill);
+  return response.data;
+};
+
+export const updateSkill = async (id: number, skill: Partial<Skill>): Promise<Skill> => {
+  const response = await axiosClient.patch(`/skills/${id}`, skill);
+  return response.data;
+};
+
+export const deleteSkill = async (id: number): Promise<void> => {
+  await axiosClient.delete(`/skills/${id}`);
+};
+
+export const createExperience = async (exp: Omit<Experience, "id">): Promise<Experience> => {
+  const response = await axiosClient.post("/experiences", exp);
+  return response.data;
+};
+
+export const updateExperience = async (id: number, exp: Partial<Experience>): Promise<Experience> => {
+  const response = await axiosClient.patch(`/experiences/${id}`, exp);
+  return response.data;
+};
+
+export const deleteExperience = async (id: number): Promise<void> => {
+  await axiosClient.delete(`/experiences/${id}`);
+};
+
+export const createEducation = async (edu: Omit<Education, "id">): Promise<Education> => {
+  const response = await axiosClient.post("/educations", edu);
+  return response.data;
+};
+
+export const updateEducation = async (id: number, edu: Partial<Education>): Promise<Education> => {
+  const response = await axiosClient.patch(`/educations/${id}`, edu);
+  return response.data;
+};
+
+export const deleteEducation = async (id: number): Promise<void> => {
+  await axiosClient.delete(`/educations/${id}`);
+};
+
+export const createPortfolio = async (port: Omit<Portfolio, "id">): Promise<Portfolio> => {
+  const response = await axiosClient.post("/portfolios", port);
+  return response.data;
+};
+
+export const updatePortfolio = async (id: number, port: Partial<Portfolio>): Promise<Portfolio> => {
+  const response = await axiosClient.patch(`/portfolios/${id}`, port);
+  return response.data;
+};
+
+export const deletePortfolio = async (id: number): Promise<void> => {
+  await axiosClient.delete(`/portfolios/${id}`);
+};
+
+export const createBlog = async (blog: Omit<Blog, "id">): Promise<Blog> => {
+  const response = await axiosClient.post("/posts", blog);
+  return response.data;
+};
+
+export const updateBlog = async (id: number, blog: Partial<Blog>): Promise<Blog> => {
+  const response = await axiosClient.patch(`/posts/${id}`, blog);
+  return response.data;
+};
+
+export const deleteBlog = async (id: number): Promise<void> => {
+  await axiosClient.delete(`/posts/${id}`);
+};
+
