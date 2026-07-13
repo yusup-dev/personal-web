@@ -9,6 +9,12 @@ const formatDate = (date: string) => {
   });
 };
 
+const isPresent = (date?: string | null) => {
+  if (!date) return true;
+  const lower = date.trim().toLowerCase();
+  return lower === "null" || lower === "" || date.startsWith("0000-00-00") || date.startsWith("0001-01-01");
+};
+
 const ExperienceComponent = () => {
   const { data: experiences, loading } = useQuery(getExperiences, [], "experiences");
 
@@ -42,7 +48,7 @@ const ExperienceComponent = () => {
 
               <p style={{ opacity: 0.6, fontSize: "14px" }}>
                 {formatDate(exp.startDate)}
-                {exp.endDate ? ` – ${formatDate(exp.endDate)}` : " – Present"}
+                {isPresent(exp.endDate) ? " – Present" : ` – ${formatDate(exp.endDate!)}`}
                 {exp.location ? ` · ${exp.location}` : ""}
               </p>
 

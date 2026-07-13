@@ -21,7 +21,7 @@ export const experienceSchema = z.object({
   company: z.string(),
   location: z.string(),
   startDate: z.string(),
-  endDate: z.string().optional(),
+  endDate: z.string().nullable().optional(),
   description: z.string(),
 });
 
@@ -31,7 +31,7 @@ export const educationSchema = z.object({
   school: z.string(),
   location: z.string(),
   startDate: z.string(),
-  endDate: z.string().optional(),
+  endDate: z.string().nullable().optional(),
   gpa: z.string(),
   description: z.string(),
 });

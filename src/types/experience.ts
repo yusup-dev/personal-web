@@ -4,6 +4,6 @@ export type Experience = {
   company: string
   location: string
   startDate: string
-  endDate?: string
+  endDate?: string | null
   description: string
 }

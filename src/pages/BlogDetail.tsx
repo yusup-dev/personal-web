@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import { useParams } from "react-router-dom";
-import { getBlogById } from "../api/apiClient";
+import { getBlogById, getImageUrl } from "../api/apiClient";
 import { useQuery } from "../hooks/useQuery";
 
 import ReactMarkdown from "react-markdown";
@@ -80,17 +80,19 @@ const BlogDetail = () => {
         {formatDate(blog.createdAt)}
       </p>
 
-      <img
-        src={blog.image}
-        alt={blog.title}
-        style={{
-          width: "100%",
-          maxHeight: "500px",
-          objectFit: "cover",
-          borderRadius: "8px",
-          marginBottom: "30px",
-        }}
-      />
+      {blog.image && (
+        <img
+          src={getImageUrl(blog.image)}
+          alt={blog.title}
+          style={{
+            width: "100%",
+            maxHeight: "500px",
+            objectFit: "cover",
+            borderRadius: "8px",
+            marginBottom: "30px",
+          }}
+        />
+      )}
       
       <div className="markdown-body" style={{ lineHeight: "1.8", fontSize: "18px" }}>
         <ReactMarkdown

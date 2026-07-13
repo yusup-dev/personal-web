@@ -9,12 +9,22 @@ const formatDate = (date: string) => {
   });
 };
 
+const isPresent = (date?: string | null) => {
+  if (!date) return true;
+  const lower = date.trim().toLowerCase();
+  return lower === "null" || lower === "" || date.startsWith("0000-00-00") || date.startsWith("0001-01-01");
+};
+
 const EducationComponent = () => {
   const { data: educations, loading } = useQuery(getEducations, [], "educations");
 
   if (loading) {
     return <Loader/>;
   }
+
+  const sortedEducations = [...educations].sort((a, b) => {
+    return new Date(b.startDate).getTime() - new Date(a.startDate).getTime();
+  });
 
   return (
     <section style={{ maxWidth: "900px", color: "#fff" }}>
@@ -23,7 +33,7 @@ const EducationComponent = () => {
       </h2>
 
       <div style={{ display: "flex", flexDirection: "column", gap: "48px" }}>
-        {educations.map((edu, idx) => (
+        {sortedEducations.map((edu, idx) => (
           <div key={edu.id ?? idx} style={{ display: "flex", gap: "24px" }}>
             <div style={{ position: "relative" }}>
               <div style={dotStyle} />
@@ -42,7 +52,7 @@ const EducationComponent = () => {
 
               <p style={{ opacity: 0.6, fontSize: "14px" }}>
                 {formatDate(edu.startDate)}
-                {edu.endDate ? ` – ${formatDate(edu.endDate)}` : " – Present"}
+                {isPresent(edu.endDate) ? " – Present" : ` – ${formatDate(edu.endDate!)}`}
                 {edu.location ? ` · ${edu.location}` : ""}
               </p>
 

@@ -18,6 +18,10 @@ const Portfolios = () => {
     return <Loader />;
   }
 
+  const sortedPortfolios = [...portfolios].sort((a, b) => {
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+  });
+
   return (
     <section style={{ maxWidth: "900px", marginTop: "80px" }}>
       <h2 style={{ fontSize: "22px", marginBottom: "24px", marginTop: "50px" }}>
@@ -25,7 +29,7 @@ const Portfolios = () => {
       </h2>
 
       <div style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
-        {portfolios.map((portfolio) => (
+        {sortedPortfolios.map((portfolio) => (
           <div
             key={portfolio.id}
             style={{

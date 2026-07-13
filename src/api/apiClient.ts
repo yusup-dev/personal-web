@@ -129,17 +129,36 @@ export const deletePortfolio = async (id: number): Promise<void> => {
   await axiosClient.delete(`/portfolios/${id}`);
 };
 
-export const createBlog = async (blog: Omit<Blog, "id">): Promise<Blog> => {
-  const response = await axiosClient.post("/posts", blog);
+export const createBlog = async (blog: FormData): Promise<Blog> => {
+  const response = await axiosClient.post("/posts", blog, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
   return response.data;
 };
 
-export const updateBlog = async (id: number, blog: Partial<Blog>): Promise<Blog> => {
-  const response = await axiosClient.patch(`/posts/${id}`, blog);
+export const updateBlog = async (id: number, blog: FormData): Promise<Blog> => {
+  const response = await axiosClient.patch(`/posts/${id}`, blog, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
   return response.data;
 };
 
 export const deleteBlog = async (id: number): Promise<void> => {
   await axiosClient.delete(`/posts/${id}`);
+};
+
+export const getImageUrl = (imagePath?: string): string => {
+  if (!imagePath) return "";
+  if (imagePath.startsWith("http://") || imagePath.startsWith("https://") || imagePath.startsWith("data:")) {
+    return imagePath;
+  }
+  const apiBase = import.meta.env.VITE_API_URL || "";
+  const serverBase = apiBase.endsWith("/api") ? apiBase.slice(0, -4) : apiBase;
+  const cleanPath = imagePath.startsWith("/") ? imagePath : `/${imagePath}`;
+  return `${serverBase}${cleanPath}`;
 };
 

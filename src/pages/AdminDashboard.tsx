@@ -23,6 +23,7 @@ import {
   createBlog,
   updateBlog,
   deleteBlog,
+  getImageUrl,
 } from "../api/apiClient";
 import type { About } from "../types/about";
 import type { Skill } from "../types/skill";
@@ -54,6 +55,7 @@ const AdminDashboard = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isNew, setIsNew] = useState(false);
   const [pdfFile, setPdfFile] = useState<File | null>(null);
+  const [blogImageFile, setBlogImageFile] = useState<File | null>(null);
 
   useEffect(() => {
     if (!localStorage.getItem("admin_token")) {
@@ -134,6 +136,7 @@ const AdminDashboard = () => {
   const openFormNew = () => {
     setIsNew(true);
     setError(null);
+    setBlogImageFile(null);
     if (activeTab === "skills") {
       setEditingItem({ name: "", category: "" });
     } else if (activeTab === "experiences") {
@@ -151,6 +154,7 @@ const AdminDashboard = () => {
   const openFormEdit = (item: any) => {
     setIsNew(false);
     setError(null);
+    setBlogImageFile(null);
     setEditingItem({ ...item });
     setIsFormOpen(true);
   };
@@ -172,8 +176,19 @@ const AdminDashboard = () => {
         if (isNew) await createPortfolio(editingItem);
         else await updatePortfolio(editingItem.id, editingItem);
       } else if (activeTab === "blogs") {
-        if (isNew) await createBlog(editingItem);
-        else await updateBlog(editingItem.id, editingItem);
+        const formData = new FormData();
+        formData.append("title", editingItem.title);
+        formData.append("content", editingItem.content);
+        formData.append("createdAt", editingItem.createdAt);
+        if (blogImageFile) {
+          formData.append("image", blogImageFile);
+        } else if (!isNew && editingItem.image) {
+          formData.append("image", editingItem.image);
+        }
+
+        if (isNew) await createBlog(formData);
+        else await updateBlog(editingItem.id, formData);
+        setBlogImageFile(null);
       }
       setIsFormOpen(false);
       setEditingItem(null);
@@ -235,6 +250,8 @@ const AdminDashboard = () => {
             onClick={() => {
               setActiveTab(tab);
               setIsFormOpen(false);
+              setBlogImageFile(null);
+              setPdfFile(null);
             }}
             style={{
               background: "transparent",
@@ -578,14 +595,28 @@ const AdminDashboard = () => {
                         />
                       </div>
                       <div style={formGroupStyle}>
-                        <label style={labelStyle}>image url</label>
+                        <label style={labelStyle}>image file</label>
                         <input
-                          type="text"
-                          value={editingItem.image}
-                          onChange={(e) => setEditingItem({ ...editingItem, image: e.target.value })}
-                          style={inputStyle}
-                          required
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => {
+                            if (e.target.files && e.target.files[0]) {
+                              setBlogImageFile(e.target.files[0]);
+                            }
+                          }}
+                          style={{ color: "#fff", fontSize: "14px", marginTop: "6px" }}
+                          required={isNew}
                         />
+                        {editingItem.image && (
+                          <div style={{ marginTop: "8px" }}>
+                            <span style={{ fontSize: "12px", color: "#9ca3af" }}>current image:</span>
+                            <img
+                              src={getImageUrl(editingItem.image)}
+                              alt="blog"
+                              style={{ width: "100px", height: "60px", objectFit: "cover", borderRadius: "4px", marginTop: "4px", display: "block" }}
+                            />
+                          </div>
+                        )}
                       </div>
                       <div style={formGroupStyle}>
                         <label style={labelStyle}>date</label>
@@ -614,7 +645,14 @@ const AdminDashboard = () => {
                     <button type="submit" style={actionButtonStyle}>
                       save
                     </button>
-                    <button type="button" onClick={() => setIsFormOpen(false)} style={plainButtonStyle}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsFormOpen(false);
+                        setBlogImageFile(null);
+                      }}
+                      style={plainButtonStyle}
+                    >
                       [cancel]
                     </button>
                   </div>
@@ -664,7 +702,9 @@ const AdminDashboard = () => {
                         ))}
 
                     {activeTab === "educations" &&
-                      educations.map((item) => (
+                      [...educations]
+                        .sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime())
+                        .map((item) => (
                         <div key={item.id} style={rowStyle}>
                           <span style={{ minWidth: "120px", color: "#9ca3af" }}>{item.school}</span>
                           <span style={{ flex: 1 }}>{item.degree}</span>
@@ -680,7 +720,9 @@ const AdminDashboard = () => {
                       ))}
 
                     {activeTab === "portfolios" &&
-                      portfolios.map((item) => (
+                      [...portfolios]
+                        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+                        .map((item) => (
                         <div key={item.id} style={rowStyle}>
                           <span style={{ minWidth: "120px", color: "#9ca3af" }}>{item.createdAt}</span>
                           <span style={{ flex: 1 }}>{item.title}</span>
@@ -696,7 +738,9 @@ const AdminDashboard = () => {
                       ))}
 
                     {activeTab === "blogs" &&
-                      blogs.map((item) => (
+                      [...blogs]
+                        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+                        .map((item) => (
                         <div key={item.id} style={rowStyle}>
                           <span style={{ minWidth: "120px", color: "#9ca3af" }}>
                             {new Date(item.createdAt).toLocaleDateString()}

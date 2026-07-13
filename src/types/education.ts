@@ -4,7 +4,7 @@ export type Education = {
   school: string
   location: string
   startDate: string
-  endDate?: string
+  endDate?: string | null
   gpa: string
   description: string
 }

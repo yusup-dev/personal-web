@@ -17,7 +17,11 @@ type BlogsProps = {
 const Blogs = ({ limit }: BlogsProps) => {
   const { data: blogs, loading } = useQuery(getBlog, [], "blogs");
 
-  const post = limit ? blogs.slice(0, limit) : blogs;
+  const sortedBlogs = [...blogs].sort((a, b) => {
+    return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+  });
+
+  const post = limit ? sortedBlogs.slice(0, limit) : sortedBlogs;
 
   if (loading) {
     return <Loader />;
