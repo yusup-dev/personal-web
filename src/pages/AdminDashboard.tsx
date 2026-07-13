@@ -808,16 +808,7 @@ const actionButtonStyle: React.CSSProperties = {
   padding: "8px 18px",
   fontSize: "13px",
   cursor: "pointer",
-  alignSelf: "flex-start",
-};
-
-const rowStyle: React.CSSProperties = {
-  display: "flex",
-  alignItems: "center",
-  fontSize: "15px",
-  paddingBottom: "14px",
-  borderBottom: "1px solid var(--border)",
-};
+  };
 
 const formGridStyle: React.CSSProperties = {
   display: "flex",
