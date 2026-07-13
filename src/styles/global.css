@@ -67,26 +67,150 @@ a {
   }
 }
 
-/* CK Editor */
+/* CK Editor / Markdown styling */
 .markdown-body h1,
 .markdown-body h2,
 .markdown-body h3 {
-  margin-top: 30px;
+  margin-top: 36px;
+  margin-bottom: 16px;
+  color: #ffffff;
+}
+
+.markdown-body h1 {
+  font-size: 28px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding-bottom: 8px;
+}
+
+.markdown-body h2 {
+  font-size: 22px;
+}
+
+.markdown-body h3 {
+  font-size: 18px;
 }
 
 .markdown-body p {
-  margin: 15px 0;
+  margin: 16px 0;
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.85);
 }
 
 .markdown-body pre {
-  padding: 16px;
+  padding: 18px;
+  background-color: #121212 !important;
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 8px;
   overflow-x: auto;
+  margin: 24px 0;
+}
+
+.markdown-body pre code {
+  background-color: transparent !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  border: none !important;
+  font-family: Consolas, "Fira Code", monospace;
 }
 
 .markdown-body code {
   font-size: 14px;
 }
+
+/* Tables */
+.markdown-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 28px 0;
+  font-size: 14px;
+  background-color: rgba(255, 255, 255, 0.02);
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.markdown-body th {
+  background-color: rgba(255, 255, 255, 0.04);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+  font-weight: 600;
+  text-align: left;
+  padding: 14px 18px;
+  color: #ffffff;
+}
+
+.markdown-body td {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 14px 18px;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.markdown-body tr:last-child td {
+  border-bottom: none;
+}
+
+.markdown-body tr:hover {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+/* Blockquotes */
+.markdown-body blockquote {
+  border-left: 4px solid #6366f1;
+  background-color: rgba(99, 102, 241, 0.06);
+  padding: 16px 24px;
+  margin: 26px 0;
+  border-radius: 0 8px 8px 0;
+}
+
+.markdown-body blockquote p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.9);
+  font-style: italic;
+}
+
+/* Lists */
+.markdown-body ul, 
+.markdown-body ol {
+  margin: 18px 0;
+  padding-left: 26px;
+}
+
+.markdown-body li {
+  margin: 8px 0;
+  line-height: 1.8;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* Inline code */
+.markdown-body :not(pre) > code {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  color: #a5b4fc !important;
+  padding: 3px 6px !important;
+  border-radius: 4px !important;
+  font-family: Consolas, "Fira Code", monospace;
+  font-size: 13.5px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* Links */
+.markdown-body a {
+  color: #818cf8;
+  text-decoration: none;
+  border-bottom: 1px dashed rgba(129, 140, 248, 0.5);
+  transition: all 0.2s ease;
+}
+
+.markdown-body a:hover {
+  color: #a5b4fc;
+  border-bottom-style: solid;
+}
+
+/* Horizontal Rule */
+.markdown-body hr {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  margin: 36px 0;
+}
+
 
 /* Loader */
 .spinner {

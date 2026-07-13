@@ -6,6 +6,7 @@ import { useQuery } from "../hooks/useQuery";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
+import rehypeSlug from "rehype-slug";
 import Loader from "../components/Loader";
 import type { Blog } from "../types/blog";
 
@@ -70,10 +71,10 @@ const BlogDetail = () => {
         }}
       />
       
-      <div style={{ lineHeight: "1.8", fontSize: "18px" }}>
+      <div className="markdown-body" style={{ lineHeight: "1.8", fontSize: "18px" }}>
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}
-          rehypePlugins={[rehypeHighlight]}
+          rehypePlugins={[rehypeHighlight, rehypeSlug]}
         >
           {blog.content}
         </ReactMarkdown>
