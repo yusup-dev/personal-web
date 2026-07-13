@@ -16,6 +16,10 @@ const ExperienceComponent = () => {
     return <Loader />;
   }
 
+  const sortedExperiences = [...experiences].sort((a, b) => {
+    return new Date(b.startDate).getTime() - new Date(a.startDate).getTime();
+  });
+
   return (
     <section style={{ maxWidth: "900px", color: "#fff" }}>
       <h2 style={{ marginTop: "80px", fontSize: "22px", marginBottom: "40px" }}>
@@ -23,7 +27,7 @@ const ExperienceComponent = () => {
       </h2>
 
       <div style={{ display: "flex", flexDirection: "column", gap: "48px" }}>
-        {experiences.map((exp, idx) => (
+        {sortedExperiences.map((exp, idx) => (
           <div key={exp.id ?? idx} style={{ display: "flex", gap: "24px" }}>
             <div style={{ position: "relative" }}>
               <div style={dotStyle} />

@@ -619,7 +619,9 @@ const AdminDashboard = () => {
                       ))}
 
                     {activeTab === "experiences" &&
-                      experiences.map((item) => (
+                      [...experiences]
+                        .sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime())
+                        .map((item) => (
                         <div key={item.id} style={rowStyle}>
                           <span style={{ minWidth: "120px", color: "#9ca3af" }}>{item.company}</span>
                           <span style={{ flex: 1 }}>{item.position}</span>
