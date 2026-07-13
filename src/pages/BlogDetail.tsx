@@ -59,7 +59,7 @@ const BlogDetail = () => {
       style={{
         maxWidth: "900px",
         margin: "64px auto",
-        color: "#fff",
+        color: "var(--fg-strong)",
       }}
     >
       <h1 style={{ fontSize: "28px", marginBottom: "12px" }}>{blog.title}</h1>

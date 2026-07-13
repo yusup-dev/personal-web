@@ -23,6 +23,8 @@ import {
   createBlog,
   updateBlog,
   deleteBlog,
+  getVisitorStats,
+  getAllVisitors,
   getImageUrl,
 } from "../api/apiClient";
 import type { About } from "../types/about";
@@ -33,8 +35,9 @@ import type { Portfolio } from "../types/portfolio";
 import type { Blog } from "../types/blog";
 import Loader from "../components/Loader";
 
-type Tab = "about" | "skills" | "experiences" | "educations" | "portfolios" | "blogs";
 
+
+type Tab = "about" | "skills" | "experiences" | "educations" | "portfolios" | "blogs" | "visitors";
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<Tab>("about");
@@ -49,6 +52,9 @@ const AdminDashboard = () => {
   const [educations, setEducations] = useState<Education[]>([]);
   const [portfolios, setPortfolios] = useState<Portfolio[]>([]);
   const [blogs, setBlogs] = useState<Blog[]>([]);
+  // Visitor stats state
+  const [visitorStats, setVisitorStats] = useState<any>(null);
+  const [visitorList, setVisitorList] = useState<any[]>([]);
 
   // Form states
   const [editingItem, setEditingItem] = useState<any>(null);
@@ -92,6 +98,12 @@ const AdminDashboard = () => {
       } else if (tab === "blogs") {
         const res = await getBlog();
         setBlogs(res);
+      } else if (tab === "visitors") {
+        // Fetch visitor statistics and list (first page)
+        const stats = await getVisitorStats();
+        setVisitorStats(stats);
+        const list = await getAllVisitors();
+        setVisitorList(list.visitors);
       }
     } catch (err: any) {
       console.error(err);
@@ -244,11 +256,11 @@ const AdminDashboard = () => {
 
       {/* Navigation (Simple links) */}
       <div style={{ display: "flex", gap: "20px", flexWrap: "wrap", marginBottom: "40px", borderBottom: "1px solid var(--border)", paddingBottom: "16px" }}>
-        {(["about", "skills", "experiences", "educations", "portfolios", "blogs"] as Tab[]).map((tab) => (
+        {(["about", "skills", "experiences", "educations", "portfolios", "blogs", "visitors"]).map((tab) => (
           <button
             key={tab}
             onClick={() => {
-              setActiveTab(tab);
+              setActiveTab(tab as Tab);
               setIsFormOpen(false);
               setBlogImageFile(null);
               setPdfFile(null);
@@ -352,7 +364,7 @@ const AdminDashboard = () => {
           )}
 
           {/* OTHER TABS */}
-          {activeTab !== "about" && (
+          {activeTab !== "about" && activeTab !== "visitors" && (
             <div>
               {/* Form View (Shown Inline when creating/editing) */}
               {isFormOpen && editingItem ? (
@@ -668,107 +680,226 @@ const AdminDashboard = () => {
 
                   <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                     {activeTab === "skills" &&
-                       skills.map((item) => (
-                         <div key={item.id} className="admin-row">
-                           <div className="admin-row-info">
-                             <span className="admin-row-meta">{item.category}</span>
-                             <span className="admin-row-title">{item.name}</span>
-                           </div>
-                           <div className="admin-row-actions">
-                             <button onClick={() => openFormEdit(item)} style={plainButtonStyle}>
-                               [edit]
-                             </button>
-                             <button onClick={() => handleDelete(item.id)} style={plainDangerStyle}>
-                               [delete]
-                             </button>
-                           </div>
-                         </div>
-                       ))}
+                      skills.map((item) => (
+                        <div key={item.id} className="admin-row">
+                          <div className="admin-row-info">
+                            <span className="admin-row-meta">{item.category}</span>
+                            <span className="admin-row-title">{item.name}</span>
+                          </div>
+                          <div className="admin-row-actions">
+                            <button onClick={() => openFormEdit(item)} style={plainButtonStyle}>
+                              [edit]
+                            </button>
+                            <button onClick={() => handleDelete(item.id)} style={plainDangerStyle}>
+                              [delete]
+                            </button>
+                          </div>
+                        </div>
+                      ))}
 
                     {activeTab === "experiences" &&
                       [...experiences]
                         .sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime())
                         .map((item) => (
-                           <div key={item.id} className="admin-row">
-                             <div className="admin-row-info">
-                               <span className="admin-row-meta">{item.company}</span>
-                               <span className="admin-row-title">{item.position}</span>
-                             </div>
-                             <div className="admin-row-actions">
-                               <button onClick={() => openFormEdit(item)} style={plainButtonStyle}>
-                                 [edit]
-                               </button>
-                               <button onClick={() => handleDelete(item.id!)} style={plainDangerStyle}>
-                                 [delete]
-                               </button>
-                             </div>
-                           </div>
+                          <div key={item.id} className="admin-row">
+                            <div className="admin-row-info">
+                              <span className="admin-row-meta">{item.company}</span>
+                              <span className="admin-row-title">{item.position}</span>
+                            </div>
+                            <div className="admin-row-actions">
+                              <button onClick={() => openFormEdit(item)} style={plainButtonStyle}>
+                                [edit]
+                              </button>
+                              <button onClick={() => handleDelete(item.id!)} style={plainDangerStyle}>
+                                [delete]
+                              </button>
+                            </div>
+                          </div>
                         ))}
 
                     {activeTab === "educations" &&
                       [...educations]
                         .sort((a, b) => new Date(b.startDate).getTime() - new Date(a.startDate).getTime())
                         .map((item) => (
-                         <div key={item.id} className="admin-row">
-                           <div className="admin-row-info">
-                             <span className="admin-row-meta">{item.school}</span>
-                             <span className="admin-row-title">{item.degree}</span>
-                           </div>
-                           <div className="admin-row-actions">
-                             <button onClick={() => openFormEdit(item)} style={plainButtonStyle}>
-                               [edit]
-                             </button>
-                             <button onClick={() => handleDelete(item.id!)} style={plainDangerStyle}>
-                               [delete]
-                             </button>
-                           </div>
-                         </div>
+                          <div key={item.id} className="admin-row">
+                            <div className="admin-row-info">
+                              <span className="admin-row-meta">{item.school}</span>
+                              <span className="admin-row-title">{item.degree}</span>
+                            </div>
+                            <div className="admin-row-actions">
+                              <button onClick={() => openFormEdit(item)} style={plainButtonStyle}>
+                                [edit]
+                              </button>
+                              <button onClick={() => handleDelete(item.id!)} style={plainDangerStyle}>
+                                [delete]
+                              </button>
+                            </div>
+                          </div>
                         ))}
 
                     {activeTab === "portfolios" &&
                       [...portfolios]
                         .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
                         .map((item) => (
-                         <div key={item.id} className="admin-row">
-                           <div className="admin-row-info">
-                             <span className="admin-row-meta">{item.createdAt}</span>
-                             <span className="admin-row-title">{item.title}</span>
-                           </div>
-                           <div className="admin-row-actions">
-                             <button onClick={() => openFormEdit(item)} style={plainButtonStyle}>
-                               [edit]
-                             </button>
-                             <button onClick={() => handleDelete(item.id!)} style={plainDangerStyle}>
-                               [delete]
-                             </button>
-                           </div>
-                         </div>
+                          <div key={item.id} className="admin-row">
+                            <div className="admin-row-info">
+                              <span className="admin-row-meta">{item.createdAt}</span>
+                              <span className="admin-row-title">{item.title}</span>
+                            </div>
+                            <div className="admin-row-actions">
+                              <button onClick={() => openFormEdit(item)} style={plainButtonStyle}>
+                                [edit]
+                              </button>
+                              <button onClick={() => handleDelete(item.id!)} style={plainDangerStyle}>
+                                [delete]
+                              </button>
+                            </div>
+                          </div>
                         ))}
 
                     {activeTab === "blogs" &&
                       [...blogs]
                         .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
                         .map((item) => (
-                         <div key={item.id} className="admin-row">
-                           <div className="admin-row-info">
-                             <span className="admin-row-meta">
-                               {new Date(item.createdAt).toLocaleDateString()}
-                             </span>
-                             <span className="admin-row-title">{item.title}</span>
-                           </div>
-                           <div className="admin-row-actions">
-                             <button onClick={() => openFormEdit(item)} style={plainButtonStyle}>
-                               [edit]
-                             </button>
-                             <button onClick={() => handleDelete(item.id!)} style={plainDangerStyle}>
-                               [delete]
-                             </button>
-                           </div>
-                         </div>
+                          <div key={item.id} className="admin-row">
+                            <div className="admin-row-info">
+                              <span className="admin-row-meta">
+                                {new Date(item.createdAt).toLocaleDateString()}
+                              </span>
+                              <span className="admin-row-title">{item.title}</span>
+                            </div>
+                            <div className="admin-row-actions">
+                              <button onClick={() => openFormEdit(item)} style={plainButtonStyle}>
+                                [edit]
+                              </button>
+                              <button onClick={() => handleDelete(item.id!)} style={plainDangerStyle}>
+                                [delete]
+                              </button>
+                            </div>
+                          </div>
                         ))}
                     {getActiveListLength() === 0 && (
                       <p style={{ opacity: 0.5, fontSize: "14px" }}>No items found.</p>
                     )}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* VISITORS TAB */}
+          {activeTab === "visitors" && visitorStats && (
+            <div style={{ display: "flex", flexDirection: "column", gap: "32px" }}>
+              
+              {/* Stat Cards Container */}
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "16px" }}>
+                <div style={cardStyle}>
+                  <div style={{ fontSize: "12px", color: "var(--muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Total Views</div>
+                  <div style={{ fontSize: "28px", fontWeight: "600", color: "var(--fg-strong)", marginTop: "4px" }}>{visitorStats.totalAllTime}</div>
+                </div>
+                <div style={cardStyle}>
+                  <div style={{ fontSize: "12px", color: "var(--muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Unique Visitors</div>
+                  <div style={{ fontSize: "28px", fontWeight: "600", color: "var(--fg-strong)", marginTop: "4px" }}>{visitorStats.uniqueVisitorsAllTime}</div>
+                </div>
+                <div style={cardStyle}>
+                  <div style={{ fontSize: "12px", color: "var(--muted)", textTransform: "uppercase", letterSpacing: "0.05em" }}>Last {visitorStats.totalLast?.days ?? 30} Days</div>
+                  <div style={{ fontSize: "28px", fontWeight: "600", color: "var(--fg-strong)", marginTop: "4px" }}>{visitorStats.totalLast?.count ?? 0}</div>
+                </div>
+              </div>
+
+              {/* Data Tables Grid */}
+              <div className="admin-grid" style={{ gap: "24px" }}>
+                {/* Top Paths Card */}
+                <div style={cardStyle}>
+                  <h3 style={{ fontSize: "15px", fontWeight: "600", color: "var(--fg-strong)", marginBottom: "16px" }}>Top Visited Pages</h3>
+                  <table style={visitorTableStyle}>
+                    <thead>
+                      <tr>
+                        <th style={visitorThStyle}>Path</th>
+                        <th style={{ ...visitorThStyle, width: "80px", textAlign: "right" }}>Visits</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {visitorStats.topPaths?.map((p: any) => (
+                        <tr key={p.path} style={trHoverStyle}>
+                          <td style={{ ...visitorTdStyle, fontFamily: "monospace", fontSize: "13px" }}>{p.path}</td>
+                          <td style={{ ...visitorTdStyle, textAlign: "right", fontWeight: "500" }}>{p.visits}</td>
+                        </tr>
+                      ))}
+                      {(!visitorStats.topPaths || visitorStats.topPaths.length === 0) && (
+                        <tr>
+                          <td colSpan={2} style={{ ...visitorTdStyle, opacity: 0.5, textAlign: "center" }}>No data</td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+
+                {/* Daily Visits Card */}
+                <div style={cardStyle}>
+                  <h3 style={{ fontSize: "15px", fontWeight: "600", color: "var(--fg-strong)", marginBottom: "16px" }}>Daily Trend</h3>
+                  <table style={visitorTableStyle}>
+                    <thead>
+                      <tr>
+                        <th style={visitorThStyle}>Date</th>
+                        <th style={{ ...visitorThStyle, width: "80px", textAlign: "right" }}>Count</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {visitorStats.daily?.map((d: any) => (
+                        <tr key={d.date} style={trHoverStyle}>
+                          <td style={visitorTdStyle}>{d.date}</td>
+                          <td style={{ ...visitorTdStyle, textAlign: "right", fontWeight: "500" }}>{d.count}</td>
+                        </tr>
+                      ))}
+                      {(!visitorStats.daily || visitorStats.daily.length === 0) && (
+                        <tr>
+                          <td colSpan={2} style={{ ...visitorTdStyle, opacity: 0.5, textAlign: "center" }}>No data</td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* Visitor List Logs */}
+              {visitorList && visitorList.length > 0 && (
+                <div style={{ display: "flex", flexDirection: "column", gap: "24px", marginTop: "16px" }}>
+                  <div>
+                    <h3 style={{ fontSize: "15px", fontWeight: "600", color: "var(--fg-strong)", marginBottom: "20px" }}>
+                      Visitor Logs
+                    </h3>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                      {visitorList.map((v: any) => (
+                        <div key={v.id} className="admin-row" style={{ alignItems: "flex-start", paddingBottom: "16px" }}>
+                          <div className="admin-row-info" style={{ flex: 1, gap: "16px" }}>
+                            {/* Metadata containing IP and Path */}
+                            <div className="admin-row-meta" style={{ display: "flex", flexDirection: "column", gap: "4px", minWidth: "160px" }}>
+                              <span style={{ fontFamily: "monospace", fontSize: "13px", color: "var(--fg-strong)", fontWeight: "500" }}>{v.ip}</span>
+                              <span style={{ fontSize: "12px", color: "var(--muted)", fontFamily: "monospace" }}>{v.path}</span>
+                            </div>
+                            
+                            {/* User Agent Content */}
+                            <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "4px", minWidth: 0 }}>
+                              <span 
+                                style={{ fontSize: "13px", color: "var(--fg)", wordBreak: "break-all", opacity: 0.85 }} 
+                                title={v.userAgent}
+                              >
+                                {v.userAgent?.slice(0, 75) ?? "-"}
+                                {v.userAgent?.length > 75 && "..."}
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* Created Time formatted like the actions column in other rows */}
+                          <div style={{ flexShrink: 0, textAlign: "right" }}>
+                            <span style={{ fontSize: "12px", color: "var(--muted)" }}>
+                              {new Date(v.createdAt).toLocaleString()}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
               )}
@@ -780,7 +911,40 @@ const AdminDashboard = () => {
   );
 };
 
+
 // --- MINIMAL STYLING ---
+const cardStyle: React.CSSProperties = {
+  background: "var(--surface)",
+  border: "1px solid var(--border)",
+  padding: "20px",
+  borderRadius: "8px",
+};
+
+const visitorTableStyle: React.CSSProperties = {
+  width: "100%",
+  borderCollapse: "collapse",
+  fontSize: "14px",
+};
+
+const visitorThStyle: React.CSSProperties = {
+  textAlign: "left",
+  borderBottom: "1px solid var(--border-strong)",
+  padding: "10px 12px",
+  background: "var(--table-header)",
+  color: "var(--fg-strong)",
+  fontWeight: "500",
+};
+
+const visitorTdStyle: React.CSSProperties = {
+  padding: "10px 12px",
+  borderBottom: "1px solid var(--table-border)",
+  color: "var(--fg-80)",
+};
+
+const trHoverStyle: React.CSSProperties = {
+  transition: "background-color 0.2s ease",
+};
+
 const plainButtonStyle: React.CSSProperties = {
   background: "transparent",
   border: "none",
@@ -808,7 +972,9 @@ const actionButtonStyle: React.CSSProperties = {
   padding: "8px 18px",
   fontSize: "13px",
   cursor: "pointer",
-  };
+  transition: "border-color 0.2s ease",
+};
+
 
 const formGridStyle: React.CSSProperties = {
   display: "flex",
@@ -848,5 +1014,6 @@ const textareaStyle: React.CSSProperties = {
   fontFamily: "Inter, system-ui, sans-serif",
   resize: "vertical",
 };
+
 
 export default AdminDashboard;

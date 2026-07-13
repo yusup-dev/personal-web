@@ -51,7 +51,23 @@ export const getEducations = async (): Promise<Education[]> => {
   return parseApiResponse(response.data, educationListSchema, ["educations", "education"]);
 };
 
-// --- AUTH & CMS MUTATOR ENDPOINTS ---
+export const getVisitorStats = async (days?: number): Promise<any> => {
+  const query = days ? `?days=${days}` : '';
+  const response = await axiosClient.get(`/visitors/stats${query}`);
+  // API wraps payload in { status, data }
+  return response.data?.data ?? response.data;
+};
+
+export const getAllVisitors = async (page = 1, limit = 20): Promise<any> => {
+  const response = await axiosClient.get(`/visitors?page=${page}&limit=${limit}`);
+  // Return the inner data object with visitors list and pagination
+  const data = response.data?.data ?? response.data;
+  return {
+    visitors: data?.visitors ?? [],
+    pagination: data?.pagination ?? {},
+    results: data?.results ?? 0,
+  };
+};
 
 export const login = async (email: string, password: string): Promise<{ token: string }> => {
   const response = await axiosClient.post("/auth/login", { email, password });
@@ -161,4 +177,3 @@ export const getImageUrl = (imagePath?: string): string => {
   const cleanPath = imagePath.startsWith("/") ? imagePath : `/${imagePath}`;
   return `${serverBase}${cleanPath}`;
 };
-
