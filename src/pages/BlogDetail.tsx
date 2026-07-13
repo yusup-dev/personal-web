@@ -8,6 +8,7 @@ import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
 import rehypeSlug from "rehype-slug";
 import Loader from "../components/Loader";
+import Mermaid from "../components/Mermaid";
 import type { Blog } from "../types/blog";
 
 const defaultFallbackBlog: Blog = {
@@ -95,6 +96,27 @@ const BlogDetail = () => {
         <ReactMarkdown
           remarkPlugins={[remarkGfm]}
           rehypePlugins={[rehypeHighlight, rehypeSlug]}
+          components={{
+            table({ node, ...props }) {
+              return (
+                <div style={{ overflowX: "auto", width: "100%", margin: "28px 0" }}>
+                  <table style={{ margin: 0 }} {...props} />
+                </div>
+              );
+            },
+            code({ node, className, children, ...props }) {
+              const match = /language-(\w+)/.exec(className || "");
+              const isMermaid = match && match[1] === "mermaid";
+              if (isMermaid) {
+                return <Mermaid chart={String(children).replace(/\n$/, "")} />;
+              }
+              return (
+                <code className={className} {...props}>
+                  {children}
+                </code>
+              );
+            }
+          }}
         >
           {blog.content}
         </ReactMarkdown>
