@@ -1,20 +1,62 @@
 import { useEffect, useState } from "react";
 import axiosClient from "../api/axiosClient";
 
+// Namespace unik untuk site ini — ganti jika ingin reset counter
+const COUNTER_NAMESPACE = "muhamadyusup-personal";
+const COUNTER_KEY = "visitors";
+const COUNTER_API = `https://api.counterapi.dev/v1/${COUNTER_NAMESPACE}/${COUNTER_KEY}`;
+
 const Footer = () => {
   const [apiStatus, setApiStatus] = useState<"checking" | "online" | "offline">("checking");
+  const [visitorCount, setVisitorCount] = useState<number | null>(null);
 
+  // Check API status
   useEffect(() => {
     const checkStatus = async () => {
       try {
         await axiosClient.get("/skills");
         setApiStatus("online");
-      } catch (err) {
+      } catch {
         setApiStatus("offline");
       }
     };
     checkStatus();
   }, []);
+
+  // Real visitor counter
+  useEffect(() => {
+    const trackVisitor = async () => {
+      try {
+        const alreadyCounted = sessionStorage.getItem("visit_counted");
+
+        let res: Response;
+        if (!alreadyCounted) {
+          // New session — increment counter
+          res = await fetch(`${COUNTER_API}/up`, { method: "GET" });
+          sessionStorage.setItem("visit_counted", "1");
+        } else {
+          // Returning visitor in same session — just fetch current count
+          res = await fetch(COUNTER_API);
+        }
+
+        if (res.ok) {
+          const data = await res.json();
+          // counterapi.dev returns { count: number }
+          const count = data?.count ?? data?.value ?? null;
+          if (typeof count === "number") {
+            setVisitorCount(count);
+          }
+        }
+      } catch {
+        // Silently fail — keep visitorCount null (hidden)
+      }
+    };
+
+    trackVisitor();
+  }, []);
+
+  const formatCount = (n: number) =>
+    n.toLocaleString("en-US");
 
   return (
     <footer
@@ -28,11 +70,15 @@ const Footer = () => {
         flexWrap: "wrap",
         gap: "16px",
         paddingTop: "24px",
-        borderTop: "1px solid rgba(255, 255, 255, 0.05)",
       }}
     >
       <div>
-        © 2026 Muhamad Yusup &nbsp;&nbsp; ↯ 1,069 visitors
+        © 2026 Muhamad Yusup
+        {visitorCount !== null && (
+          <span style={{ marginLeft: "16px", opacity: 0.6 }}>
+            ↯ {formatCount(visitorCount)} visitors
+          </span>
+        )}
       </div>
       <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
         <span
@@ -45,7 +91,7 @@ const Footer = () => {
                 ? "#10b981"
                 : apiStatus === "offline"
                 ? "#f59e0b"
-                : "#6b7280",
+                : "var(--muted)",
             boxShadow:
               apiStatus === "online"
                 ? "0 0 8px #10b981"
@@ -81,4 +127,3 @@ const Footer = () => {
 };
 
 export default Footer;
-

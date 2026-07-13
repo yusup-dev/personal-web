@@ -2,7 +2,7 @@ import { NavLink } from "react-router-dom";
 
 const Navbar = () => {
   return (
-    <nav>
+    <nav style={{ paddingTop: "8px", paddingBottom: "8px" }}>
       <ul
         style={{
           display: "flex",

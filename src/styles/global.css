@@ -1,3 +1,90 @@
+/* ─── Design Tokens ─────────────────────────────────────────── */
+:root {
+  /* Base */
+  --bg:          #0e0e0e;
+  --fg:          #eaeaea;
+  --fg-strong:   #ffffff;
+  --muted:       #9ca3af;
+
+  /* Alpha text */
+  --fg-90: rgba(255, 255, 255, 0.90);
+  --fg-85: rgba(255, 255, 255, 0.85);
+  --fg-80: rgba(255, 255, 255, 0.80);
+  --fg-75: rgba(255, 255, 255, 0.75);
+  --fg-60: rgba(255, 255, 255, 0.60);
+
+  /* Surfaces & borders */
+  --surface:        rgba(255, 255, 255, 0.03);
+  --surface-md:     rgba(255, 255, 255, 0.05);
+  --surface-lg:     rgba(255, 255, 255, 0.08);
+  --surface-hover:  rgba(255, 255, 255, 0.10);
+  --border:         rgba(255, 255, 255, 0.08);
+  --border-strong:  rgba(255, 255, 255, 0.40);
+  --table-header:   rgba(255, 255, 255, 0.04);
+  --table-border:   rgba(255, 255, 255, 0.06);
+  --table-hover:    rgba(255, 255, 255, 0.03);
+
+  /* Timeline */
+  --timeline-dot:  #ffffff;
+  --timeline-line: rgba(255, 255, 255, 0.20);
+
+  /* Accent */
+  --accent:            #6366f1;
+  --accent-bg:         rgba(99, 102, 241, 0.06);
+  --accent-link:       #818cf8;
+  --accent-link-hover: #a5b4fc;
+  --code-color:        #a5b4fc;
+
+  /* Code */
+  --code-bg:            #121212;
+  --code-inline-bg:     rgba(255, 255, 255, 0.08);
+  --code-inline-border: rgba(255, 255, 255, 0.05);
+
+  /* Spinner */
+  --spinner-track: #2d2d2d;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg:        #ffffff;
+    --fg:        #1a1a1a;
+    --fg-strong: #000000;
+    --muted:     #6b7280;
+
+    --fg-90: rgba(0, 0, 0, 0.90);
+    --fg-85: rgba(0, 0, 0, 0.85);
+    --fg-80: rgba(0, 0, 0, 0.80);
+    --fg-75: rgba(0, 0, 0, 0.75);
+    --fg-60: rgba(0, 0, 0, 0.60);
+
+    --surface:        rgba(0, 0, 0, 0.02);
+    --surface-md:     rgba(0, 0, 0, 0.04);
+    --surface-lg:     rgba(0, 0, 0, 0.07);
+    --surface-hover:  rgba(0, 0, 0, 0.09);
+    --border:         rgba(0, 0, 0, 0.10);
+    --border-strong:  rgba(0, 0, 0, 0.40);
+    --table-header:   rgba(0, 0, 0, 0.04);
+    --table-border:   rgba(0, 0, 0, 0.07);
+    --table-hover:    rgba(0, 0, 0, 0.02);
+
+    --timeline-dot:  #000000;
+    --timeline-line: rgba(0, 0, 0, 0.20);
+
+    --accent:            #4f46e5;
+    --accent-bg:         rgba(79, 70, 229, 0.07);
+    --accent-link:       #4f46e5;
+    --accent-link-hover: #3730a3;
+    --code-color:        #4338ca;
+
+    --code-bg:            #f3f4f6;
+    --code-inline-bg:     rgba(0, 0, 0, 0.06);
+    --code-inline-border: rgba(0, 0, 0, 0.08);
+
+    --spinner-track: #e5e7eb;
+  }
+}
+
+/* ─── Reset ─────────────────────────────────────────────────── */
 * {
   margin: 0;
   padding: 0;
@@ -5,15 +92,15 @@
 }
 
 body {
-  background-color: #0e0e0e;
-  color: #eaeaea;
+  background-color: var(--bg);
+  color: var(--fg);
   font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 .container {
   max-width: 900px;
   margin: 0 auto;
-  padding: 60px 20px;
+  padding: 40px 24px 60px;
 }
 
 a {
@@ -22,27 +109,25 @@ a {
 }
 
 .muted {
-  color: #9ca3af;
+  color: var(--muted);
 }
 
-/* SOCIAL */
+/* ─── Socials ────────────────────────────────────────────────── */
 .socials {
   display: flex;
   gap: 24px;
   flex-wrap: wrap;
-  margin-top: 48px;
+  margin-top: 64px;
 }
 
 .social-link {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-
   font-size: 15px;
-  color: #ffffff;
+  color: var(--fg-strong);
   text-decoration: none;
   opacity: 0.8;
-
   transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
@@ -56,7 +141,42 @@ a {
   transform: translateY(1px);
 }
 
-/* Mobile */
+/* ─── Skill Badge ────────────────────────────────────────────── */
+.skill-badge {
+  font-size: 12px;
+  font-family: Consolas, "Fira Code", "JetBrains Mono", monospace;
+  background-color: var(--surface-md);
+  border: 1px solid var(--border);
+  padding: 4px 10px;
+  border-radius: 6px;
+  color: var(--fg);
+  opacity: 0.85;
+  transition: background-color 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
+  cursor: default;
+}
+
+.skill-badge:hover {
+  background-color: var(--surface-hover);
+  border-color: var(--border-strong);
+  opacity: 1;
+}
+
+/* ─── Back Button (BlogDetail not found) ─────────────────────── */
+.btn-outline {
+  color: var(--fg-strong);
+  border: 1px solid var(--border-strong);
+  padding: 8px 20px;
+  font-size: 14px;
+  text-decoration: none;
+  transition: border-color 0.2s ease;
+  display: inline-block;
+}
+
+.btn-outline:hover {
+  border-color: var(--fg-strong);
+}
+
+/* ─── Mobile ─────────────────────────────────────────────────── */
 @media (max-width: 640px) {
   .socials {
     gap: 16px;
@@ -67,18 +187,18 @@ a {
   }
 }
 
-/* CK Editor / Markdown styling */
+/* ─── Markdown Body ──────────────────────────────────────────── */
 .markdown-body h1,
 .markdown-body h2,
 .markdown-body h3 {
   margin-top: 36px;
   margin-bottom: 16px;
-  color: #ffffff;
+  color: var(--fg-strong);
 }
 
 .markdown-body h1 {
   font-size: 28px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid var(--border);
   padding-bottom: 8px;
 }
 
@@ -93,13 +213,13 @@ a {
 .markdown-body p {
   margin: 16px 0;
   line-height: 1.8;
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--fg-85);
 }
 
 .markdown-body pre {
   padding: 18px;
-  background-color: #121212 !important;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background-color: var(--code-bg);
+  border: 1px solid var(--border);
   border-radius: 8px;
   overflow-x: auto;
   margin: 24px 0;
@@ -123,25 +243,25 @@ a {
   border-collapse: collapse;
   margin: 28px 0;
   font-size: 14px;
-  background-color: rgba(255, 255, 255, 0.02);
+  background-color: var(--surface);
   border-radius: 8px;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border);
 }
 
 .markdown-body th {
-  background-color: rgba(255, 255, 255, 0.04);
-  border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+  background-color: var(--table-header);
+  border-bottom: 2px solid var(--border);
   font-weight: 600;
   text-align: left;
   padding: 14px 18px;
-  color: #ffffff;
+  color: var(--fg-strong);
 }
 
 .markdown-body td {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid var(--table-border);
   padding: 14px 18px;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--fg-80);
 }
 
 .markdown-body tr:last-child td {
@@ -149,13 +269,13 @@ a {
 }
 
 .markdown-body tr:hover {
-  background-color: rgba(255, 255, 255, 0.03);
+  background-color: var(--table-hover);
 }
 
 /* Blockquotes */
 .markdown-body blockquote {
-  border-left: 4px solid #6366f1;
-  background-color: rgba(99, 102, 241, 0.06);
+  border-left: 4px solid var(--accent);
+  background-color: var(--accent-bg);
   padding: 16px 24px;
   margin: 26px 0;
   border-radius: 0 8px 8px 0;
@@ -163,12 +283,12 @@ a {
 
 .markdown-body blockquote p {
   margin: 0;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--fg-90);
   font-style: italic;
 }
 
 /* Lists */
-.markdown-body ul, 
+.markdown-body ul,
 .markdown-body ol {
   margin: 18px 0;
   padding-left: 26px;
@@ -177,47 +297,46 @@ a {
 .markdown-body li {
   margin: 8px 0;
   line-height: 1.8;
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--fg-85);
 }
 
 /* Inline code */
 .markdown-body :not(pre) > code {
-  background-color: rgba(255, 255, 255, 0.08) !important;
-  color: #a5b4fc !important;
+  background-color: var(--code-inline-bg) !important;
+  color: var(--code-color) !important;
   padding: 3px 6px !important;
   border-radius: 4px !important;
   font-family: Consolas, "Fira Code", monospace;
   font-size: 13.5px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--code-inline-border);
 }
 
 /* Links */
 .markdown-body a {
-  color: #818cf8;
+  color: var(--accent-link);
   text-decoration: none;
-  border-bottom: 1px dashed rgba(129, 140, 248, 0.5);
+  border-bottom: 1px dashed color-mix(in srgb, var(--accent-link) 50%, transparent);
   transition: all 0.2s ease;
 }
 
 .markdown-body a:hover {
-  color: #a5b4fc;
+  color: var(--accent-link-hover);
   border-bottom-style: solid;
 }
 
 /* Horizontal Rule */
 .markdown-body hr {
   border: none;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid var(--border);
   margin: 36px 0;
 }
 
-
-/* Loader */
+/* ─── Loader ─────────────────────────────────────────────────── */
 .spinner {
   width: 40px;
   height: 40px;
-  border: 4px solid #2d2d2d;
-  border-top: 4px solid #ffffff;
+  border: 4px solid var(--spinner-track);
+  border-top: 4px solid var(--fg-strong);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }

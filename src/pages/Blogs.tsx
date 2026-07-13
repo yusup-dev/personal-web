@@ -28,8 +28,8 @@ const Blogs = ({ limit }: BlogsProps) => {
   }
 
   return (
-    <section style={{ maxWidth: "900px", marginTop: "80px" }}>
-      <h2 style={{ fontSize: "22px", marginBottom: "24px", marginTop: "50px" }}>
+    <section style={{ maxWidth: "900px", marginTop: "64px" }}>
+      <h2 style={{ fontSize: "22px", marginBottom: "24px" }}>
         My Blogs.
       </h2>
 
@@ -44,14 +44,14 @@ const Blogs = ({ limit }: BlogsProps) => {
               fontSize: "16px",
             }}
           >
-            <span style={{ color: "#9ca3af", minWidth: "120px" }}>
+            <span style={{ color: "var(--muted)", minWidth: "120px" }}>
               {formatDate(blog.createdAt)}
             </span>
 
             <a
               href={`/blogs/${blog.id}`}
               style={{
-                color: "#fff",
+                color: "var(--fg-strong)",
                 textDecoration: "none",
               }}
             >

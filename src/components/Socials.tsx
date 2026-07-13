@@ -8,9 +8,7 @@ type Social = {
 const socials: Social[] = [
   { name: "github", url: "https://github.com/yusup-dev" },
   { name: "linkedin", url: "https://www.linkedin.com/in/yusup-dev" },
-  { name: "medium", url: "https://medium.com/@yusup-dev" },
   { name: "instagram", url: "https://instagram.com/muhamadyusup3_" },
-  { name: "dev.to", url: "https://dev.to/yusupdev" },
   { name: "email", url: "mailto:muh.yusup965@gmail.com" },
 ];
 

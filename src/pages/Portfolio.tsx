@@ -23,8 +23,8 @@ const Portfolios = () => {
   });
 
   return (
-    <section style={{ maxWidth: "900px", marginTop: "80px" }}>
-      <h2 style={{ fontSize: "22px", marginBottom: "24px", marginTop: "50px" }}>
+    <section style={{ maxWidth: "900px", marginTop: "64px" }}>
+      <h2 style={{ fontSize: "22px", marginBottom: "24px" }}>
         My Portfolio.
       </h2>
 
@@ -39,14 +39,14 @@ const Portfolios = () => {
               fontSize: "16px",
             }}
           >
-            <span style={{ color: "#9ca3af", minWidth: "120px" }}>
+            <span style={{ color: "var(--muted)", minWidth: "120px" }}>
               {formatDate(portfolio.createdAt)}
             </span>
 
             <div
               style={{ display: "flex", flexDirection: "column", gap: "8px" }}
             >
-              <span style={{ color: "#fff", fontWeight: 500 }}>
+              <span style={{ color: "var(--fg-strong)", fontWeight: 500 }}>
                 {portfolio.title}
               </span>
               <div style={{ display: "flex", gap: "16px" }}>

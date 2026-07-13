@@ -27,8 +27,8 @@ const ExperienceComponent = () => {
   });
 
   return (
-    <section style={{ maxWidth: "900px", color: "#fff" }}>
-      <h2 style={{ marginTop: "80px", fontSize: "22px", marginBottom: "40px" }}>
+    <section style={{ maxWidth: "900px", color: "var(--fg-strong)" }}>
+      <h2 style={{ marginTop: "64px", fontSize: "22px", marginBottom: "40px" }}>
         Experience.
       </h2>
 
@@ -53,7 +53,7 @@ const ExperienceComponent = () => {
               </p>
 
               {exp.description && (
-                <p style={{ marginTop: "10px", opacity: 0.8 }}>
+                <p style={{ marginTop: "12px", opacity: 0.75, lineHeight: 1.7 }}>
                   {exp.description}
                 </p>
               )}
@@ -69,14 +69,14 @@ const dotStyle = {
   width: "10px",
   height: "10px",
   borderRadius: "50%",
-  backgroundColor: "#fff",
+  backgroundColor: "var(--timeline-dot)",
   marginTop: "6px",
 };
 
 const lineStyle = {
   width: "2px",
   height: "100%",
-  backgroundColor: "rgba(255,255,255,0.2)",
+  backgroundColor: "var(--timeline-line)",
   margin: "4px auto 0",
 };
 

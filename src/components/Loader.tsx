@@ -20,14 +20,14 @@ const Loader = () => {
           0%, 100% {
             transform: translateY(0) scale(0.7);
             opacity: 0.3;
-            background-color: rgba(255, 255, 255, 0.3);
+            background-color: var(--timeline-line);
             box-shadow: none;
           }
           50% {
             transform: translateY(-8px) scale(1.1);
             opacity: 1;
-            background-color: #ffffff;
-            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.45);
+            background-color: var(--fg-strong);
+            box-shadow: 0 4px 12px var(--timeline-line);
           }
         }
       `}</style>

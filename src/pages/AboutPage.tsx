@@ -35,7 +35,8 @@ const AboutPage = () => {
 }, {});
 
   return (
-    <section style={{ maxWidth: "900px", marginTop: "80px" }}>
+    <section style={{ maxWidth: "900px", marginTop: "64px" }}
+    >
       <h2 style={{ fontSize: "22px", marginBottom: "24px" }}>About Me.</h2>
 
       <p style={{ fontSize: "16px", lineHeight: "1.8", opacity: 0.9 }}>
@@ -65,7 +66,7 @@ const AboutPage = () => {
 
       <EducationComponent/>
 
-      <h2 style={{ marginTop: "80px", fontSize: "22px" }}>Skills.</h2>
+      <h2 style={{ marginTop: "80px", fontSize: "22px", marginBottom: "24px" }}>Skills.</h2>
 
       <div style={skillsGrid}>
         {Object.entries(groupedSkills).map(([category, items]) => (
@@ -85,28 +86,7 @@ const SkillBlock = ({ title, items }: { title: string; items: string }) => (
     <h4 style={{ marginBottom: "12px", fontSize: "15px", fontWeight: 600 }}>{title}</h4>
     <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
       {items.split(",").map((item) => (
-        <span
-          key={item}
-          style={{
-            fontSize: "12px",
-            fontFamily: 'Consolas, "Fira Code", "JetBrains Mono", monospace',
-            backgroundColor: "rgba(255, 255, 255, 0.05)",
-            border: "1px solid rgba(255, 255, 255, 0.08)",
-            padding: "4px 10px",
-            borderRadius: "6px",
-            color: "#eaeaea",
-            opacity: 0.85,
-            transition: "all 0.2s ease",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.1)";
-            e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.15)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = "rgba(255, 255, 255, 0.05)";
-            e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.08)";
-          }}
-        >
+        <span key={item} className="skill-badge">
           {item.trim()}
         </span>
       ))}

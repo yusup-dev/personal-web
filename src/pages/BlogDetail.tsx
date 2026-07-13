@@ -42,24 +42,12 @@ const BlogDetail = () => {
 
   if (error && blog.id === 0) {
     return (
-      <section style={{ marginTop: "80px", color: "#fff" }}>
+      <section style={{ marginTop: "64px", color: "var(--fg-strong)" }}>
         <h2 style={{ fontSize: "28px", fontWeight: 600, marginBottom: "16px" }}>Post Not Found.</h2>
-        <p style={{ color: "#9ca3af", fontSize: "16px", marginBottom: "32px", lineHeight: 1.6 }}>
+        <p style={{ color: "var(--muted)", fontSize: "16px", marginBottom: "32px", lineHeight: 1.6 }}>
           The blog post you are looking for does not exist or has been removed.
         </p>
-        <a
-          href="/blogs"
-          style={{
-            color: "#fff",
-            border: "1px solid rgba(255, 255, 255, 0.4)",
-            padding: "8px 20px",
-            fontSize: "14px",
-            textDecoration: "none",
-            transition: "border-color 0.2s ease",
-          }}
-          onMouseEnter={(e) => (e.currentTarget.style.borderColor = "#fff")}
-          onMouseLeave={(e) => (e.currentTarget.style.borderColor = "rgba(255, 255, 255, 0.4)")}
-        >
+        <a href="/blogs" className="btn-outline">
           Back to Blogs
         </a>
       </section>
@@ -70,13 +58,13 @@ const BlogDetail = () => {
     <section
       style={{
         maxWidth: "900px",
-        margin: "80px auto",
+        margin: "64px auto",
         color: "#fff",
       }}
     >
       <h1 style={{ fontSize: "28px", marginBottom: "12px" }}>{blog.title}</h1>
 
-      <p style={{ color: "#9ca3af", marginBottom: "30px" }}>
+      <p style={{ color: "var(--muted)", marginBottom: "30px" }}>
         {formatDate(blog.createdAt)}
       </p>
 

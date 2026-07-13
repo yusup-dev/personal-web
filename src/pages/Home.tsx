@@ -21,7 +21,7 @@ const Home = () => {
   }
 
   return (
-    <section style={{ marginTop: "80px" }}>
+    <section style={{ marginTop: "64px" }}>
       <h1 style={{ fontSize: "36px", fontWeight: 600 }}>{about.title}</h1>
 
       <p
@@ -55,7 +55,7 @@ const Home = () => {
         </a>
       </div>
       <Blogs limit={5} />
-      <div style={{ marginTop: "15px" }}>
+      <div style={{ marginTop: "24px" }}>
         <a
           href="/blogs"
           style={{
@@ -63,7 +63,7 @@ const Home = () => {
             alignItems: "center",
             gap: "6px",
             textDecoration: "none",
-            color: "#9ca3af",
+            color: "var(--muted)",
           }}
         >
           See All Blogs
