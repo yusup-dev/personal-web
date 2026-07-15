@@ -24,13 +24,14 @@ const Footer = () => {
     const trackVisitorCall = async () => {
       try {
         const path = window.location.pathname;
-        const alreadyCountedKey = `visit_counted_${path}`;
-        const alreadyCounted = sessionStorage.getItem(alreadyCountedKey);
 
-        // Record visit if not yet counted in this session
-        if (!alreadyCounted) {
+        // Only track visitor on home page
+        const isHomePage = path === "/";
+        const alreadyCounted = sessionStorage.getItem("visit_counted_home");
+
+        if (isHomePage && !alreadyCounted) {
           await trackVisitor(path);
-          sessionStorage.setItem(alreadyCountedKey, "1");
+          sessionStorage.setItem("visit_counted_home", "1");
         }
 
         // Fetch updated stats to display count in Footer

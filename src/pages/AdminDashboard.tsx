@@ -7,6 +7,7 @@ import {
   getEducations,
   getPortfolio,
   getBlog,
+  getBlogPaginated,
   updateAbout,
   createSkill,
   updateSkill,
@@ -52,9 +53,15 @@ const AdminDashboard = () => {
   const [educations, setEducations] = useState<Education[]>([]);
   const [portfolios, setPortfolios] = useState<Portfolio[]>([]);
   const [blogs, setBlogs] = useState<Blog[]>([]);
+  const [blogPage, setBlogPage] = useState(1);
+  const [blogPagination, setBlogPagination] = useState<any>(null);
+  const [blogPageLoading, setBlogPageLoading] = useState(false);
   // Visitor stats state
   const [visitorStats, setVisitorStats] = useState<any>(null);
   const [visitorList, setVisitorList] = useState<any[]>([]);
+  const [visitorPage, setVisitorPage] = useState(1);
+  const [visitorPagination, setVisitorPagination] = useState<any>(null);
+  const [visitorPageLoading, setVisitorPageLoading] = useState(false);
 
   // Form states
   const [editingItem, setEditingItem] = useState<any>(null);
@@ -96,14 +103,18 @@ const AdminDashboard = () => {
         const res = await getPortfolio();
         setPortfolios(res);
       } else if (tab === "blogs") {
-        const res = await getBlog();
-        setBlogs(res);
+        setBlogPage(1);
+        const res = await getBlogPaginated(1, 5);
+        setBlogs(res.blogs);
+        setBlogPagination(res.pagination);
       } else if (tab === "visitors") {
         // Fetch visitor statistics and list (first page)
         const stats = await getVisitorStats();
         setVisitorStats(stats);
-        const list = await getAllVisitors();
+        setVisitorPage(1);
+        const list = await getAllVisitors(1, 5);
         setVisitorList(list.visitors);
+        setVisitorPagination(list.pagination);
       }
     } catch (err: any) {
       console.error(err);
@@ -158,7 +169,7 @@ const AdminDashboard = () => {
     } else if (activeTab === "portfolios") {
       setEditingItem({ title: "", github: "", article: "", createdAt: new Date().toISOString().split("T")[0] });
     } else if (activeTab === "blogs") {
-      setEditingItem({ title: "", content: "", image: "", createdAt: new Date().toISOString().split("T")[0] });
+      setEditingItem({ title: "", content: "", image: "", published: true, createdAt: new Date().toISOString().split("T")[0] });
     }
     setIsFormOpen(true);
   };
@@ -197,6 +208,7 @@ const AdminDashboard = () => {
         } else if (!isNew && editingItem.image) {
           formData.append("image", editingItem.image);
         }
+        formData.append("published", String(editingItem.published ?? true));
 
         if (isNew) await createBlog(formData);
         else await updateBlog(editingItem.id, formData);
@@ -607,7 +619,7 @@ const AdminDashboard = () => {
                         />
                       </div>
                       <div style={formGroupStyle}>
-                        <label style={labelStyle}>image file</label>
+                        <label style={labelStyle}>image file <span style={{ color: "var(--muted)", fontWeight: 400 }}>(optional)</span></label>
                         <input
                           type="file"
                           accept="image/*"
@@ -617,7 +629,6 @@ const AdminDashboard = () => {
                             }
                           }}
                           style={{ color: "var(--fg-strong)", fontSize: "14px", marginTop: "6px" }}
-                          required={isNew}
                         />
                         {editingItem.image && (
                           <div style={{ marginTop: "8px" }}>
@@ -649,6 +660,18 @@ const AdminDashboard = () => {
                           rows={8}
                           required
                         />
+                      </div>
+                      <div style={{ display: "flex", alignItems: "center", gap: "10px", marginTop: "4px" }}>
+                        <input
+                          id="blog-published-toggle"
+                          type="checkbox"
+                          checked={editingItem.published ?? true}
+                          onChange={(e) => setEditingItem({ ...editingItem, published: e.target.checked })}
+                          style={{ width: "16px", height: "16px", cursor: "pointer", accentColor: "var(--fg-strong)" }}
+                        />
+                        <label htmlFor="blog-published-toggle" style={{ ...labelStyle, margin: 0, cursor: "pointer" }}>
+                          published
+                        </label>
                       </div>
                     </>
                   )}
@@ -758,30 +781,90 @@ const AdminDashboard = () => {
                         ))}
 
                     {activeTab === "blogs" &&
-                      [...blogs]
-                        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
-                        .map((item) => (
-                          <div key={item.id} className="admin-row">
-                            <div className="admin-row-info">
-                              <span className="admin-row-meta">
-                                {new Date(item.createdAt).toLocaleDateString()}
-                              </span>
-                              <span className="admin-row-title">{item.title}</span>
-                            </div>
-                            <div className="admin-row-actions">
-                              <button onClick={() => openFormEdit(item)} style={plainButtonStyle}>
-                                [edit]
-                              </button>
-                              <button onClick={() => handleDelete(item.id!)} style={plainDangerStyle}>
-                                [delete]
-                              </button>
-                            </div>
+                      blogs.map((item) => (
+                        <div key={item.id} className="admin-row">
+                          <div className="admin-row-info">
+                            <span className="admin-row-meta">
+                              {new Date(item.createdAt).toLocaleDateString()}
+                            </span>
+                            <span className="admin-row-title">
+                              {item.title}
+                              {item.published === false && (
+                                <span style={{ marginLeft: "8px", fontSize: "11px", color: "var(--muted)", border: "1px solid var(--border)", borderRadius: "3px", padding: "1px 5px", verticalAlign: "middle" }}>
+                                  draft
+                                </span>
+                              )}
+                            </span>
                           </div>
-                        ))}
+                          <div className="admin-row-actions">
+                            <button onClick={() => openFormEdit(item)} style={plainButtonStyle}>
+                              [edit]
+                            </button>
+                            <button onClick={() => handleDelete(item.id!)} style={plainDangerStyle}>
+                              [delete]
+                            </button>
+                          </div>
+                        </div>
+                      ))}
                     {getActiveListLength() === 0 && (
                       <p style={{ opacity: 0.5, fontSize: "14px" }}>No items found.</p>
                     )}
                   </div>
+
+                  {/* Blog Pagination */}
+                  {activeTab === "blogs" && blogPagination && blogPagination.totalPages > 1 && (
+                    <div style={{ display: "flex", alignItems: "center", gap: "16px", marginTop: "24px" }}>
+                      <button
+                        disabled={!blogPagination.hasPrevPage || blogPageLoading}
+                        onClick={async () => {
+                          const nextPage = blogPage - 1;
+                          setBlogPageLoading(true);
+                          try {
+                            const res = await getBlogPaginated(nextPage, 5);
+                            setBlogs(res.blogs);
+                            setBlogPagination(res.pagination);
+                            setBlogPage(nextPage);
+                          } finally {
+                            setBlogPageLoading(false);
+                          }
+                        }}
+                        style={{
+                          ...plainButtonStyle,
+                          opacity: !blogPagination.hasPrevPage ? 0.3 : 1,
+                          cursor: !blogPagination.hasPrevPage ? "not-allowed" : "pointer",
+                        }}
+                      >
+                        ← prev
+                      </button>
+
+                      <span style={{ fontSize: "13px", color: "var(--muted)" }}>
+                        {blogPage} / {blogPagination.totalPages}
+                      </span>
+
+                      <button
+                        disabled={!blogPagination.hasNextPage || blogPageLoading}
+                        onClick={async () => {
+                          const nextPage = blogPage + 1;
+                          setBlogPageLoading(true);
+                          try {
+                            const res = await getBlogPaginated(nextPage, 5);
+                            setBlogs(res.blogs);
+                            setBlogPagination(res.pagination);
+                            setBlogPage(nextPage);
+                          } finally {
+                            setBlogPageLoading(false);
+                          }
+                        }}
+                        style={{
+                          ...plainButtonStyle,
+                          opacity: !blogPagination.hasNextPage ? 0.3 : 1,
+                          cursor: !blogPagination.hasNextPage ? "not-allowed" : "pointer",
+                        }}
+                      >
+                        next →
+                      </button>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -863,12 +946,22 @@ const AdminDashboard = () => {
               </div>
 
               {/* Visitor List Logs */}
-              {visitorList && visitorList.length > 0 && (
-                <div style={{ display: "flex", flexDirection: "column", gap: "24px", marginTop: "16px" }}>
-                  <div>
-                    <h3 style={{ fontSize: "15px", fontWeight: "600", color: "var(--fg-strong)", marginBottom: "20px" }}>
-                      Visitor Logs
-                    </h3>
+              <div style={{ display: "flex", flexDirection: "column", gap: "24px", marginTop: "16px" }}>
+                <div>
+                  <h3 style={{ fontSize: "15px", fontWeight: "600", color: "var(--fg-strong)", marginBottom: "20px" }}>
+                    Visitor Logs
+                    {visitorPagination && (
+                      <span style={{ fontWeight: "400", fontSize: "13px", color: "var(--muted)", marginLeft: "10px" }}>
+                        (page {visitorPage} of {visitorPagination.totalPages ?? 1} — {visitorPagination.total ?? 0} total)
+                      </span>
+                    )}
+                  </h3>
+
+                  {visitorPageLoading ? (
+                    <p style={{ fontSize: "14px", opacity: 0.5 }}>loading...</p>
+                  ) : visitorList.length === 0 ? (
+                    <p style={{ fontSize: "14px", opacity: 0.5 }}>No visitor logs found.</p>
+                  ) : (
                     <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                       {visitorList.map((v: any) => (
                         <div key={v.id} className="admin-row" style={{ alignItems: "flex-start", paddingBottom: "16px" }}>
@@ -878,11 +971,11 @@ const AdminDashboard = () => {
                               <span style={{ fontFamily: "monospace", fontSize: "13px", color: "var(--fg-strong)", fontWeight: "500" }}>{v.ip}</span>
                               <span style={{ fontSize: "12px", color: "var(--muted)", fontFamily: "monospace" }}>{v.path}</span>
                             </div>
-                            
+
                             {/* User Agent Content */}
                             <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "4px", minWidth: 0 }}>
-                              <span 
-                                style={{ fontSize: "13px", color: "var(--fg)", wordBreak: "break-all", opacity: 0.85 }} 
+                              <span
+                                style={{ fontSize: "13px", color: "var(--fg)", wordBreak: "break-all", opacity: 0.85 }}
                                 title={v.userAgent}
                               >
                                 {v.userAgent?.slice(0, 75) ?? "-"}
@@ -891,7 +984,7 @@ const AdminDashboard = () => {
                             </div>
                           </div>
 
-                          {/* Created Time formatted like the actions column in other rows */}
+                          {/* Created Time */}
                           <div style={{ flexShrink: 0, textAlign: "right" }}>
                             <span style={{ fontSize: "12px", color: "var(--muted)" }}>
                               {new Date(v.createdAt).toLocaleString()}
@@ -900,9 +993,64 @@ const AdminDashboard = () => {
                         </div>
                       ))}
                     </div>
-                  </div>
+                  )}
+
+                  {/* Pagination controls */}
+                  {visitorPagination && visitorPagination.totalPages > 1 && (
+                    <div style={{ display: "flex", alignItems: "center", gap: "16px", marginTop: "24px" }}>
+                      <button
+                        disabled={visitorPage <= 1 || visitorPageLoading}
+                        onClick={async () => {
+                          const nextPage = visitorPage - 1;
+                          setVisitorPageLoading(true);
+                          try {
+                            const list = await getAllVisitors(nextPage, 5);
+                            setVisitorList(list.visitors);
+                            setVisitorPagination(list.pagination);
+                            setVisitorPage(nextPage);
+                          } finally {
+                            setVisitorPageLoading(false);
+                          }
+                        }}
+                        style={{
+                          ...plainButtonStyle,
+                          opacity: visitorPage <= 1 ? 0.3 : 1,
+                          cursor: visitorPage <= 1 ? "not-allowed" : "pointer",
+                        }}
+                      >
+                        ← prev
+                      </button>
+
+                      <span style={{ fontSize: "13px", color: "var(--muted)" }}>
+                        {visitorPage} / {visitorPagination.totalPages}
+                      </span>
+
+                      <button
+                        disabled={visitorPage >= (visitorPagination.totalPages ?? 1) || visitorPageLoading}
+                        onClick={async () => {
+                          const nextPage = visitorPage + 1;
+                          setVisitorPageLoading(true);
+                          try {
+                            const list = await getAllVisitors(nextPage, 5);
+                            setVisitorList(list.visitors);
+                            setVisitorPagination(list.pagination);
+                            setVisitorPage(nextPage);
+                          } finally {
+                            setVisitorPageLoading(false);
+                          }
+                        }}
+                        style={{
+                          ...plainButtonStyle,
+                          opacity: visitorPage >= (visitorPagination.totalPages ?? 1) ? 0.3 : 1,
+                          cursor: visitorPage >= (visitorPagination.totalPages ?? 1) ? "not-allowed" : "pointer",
+                        }}
+                      >
+                        next →
+                      </button>
+                    </div>
+                  )}
                 </div>
-              )}
+              </div>
             </div>
           )}
         </div>

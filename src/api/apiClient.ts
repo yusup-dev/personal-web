@@ -36,6 +36,14 @@ export const getBlog = async (): Promise<Blog[]> => {
   return parseApiResponse(response.data, blogListSchema, ["posts", "blogs"]);
 };
 
+export const getBlogPaginated = async (page = 1, limit = 5): Promise<{ blogs: Blog[]; pagination: any }> => {
+  const response = await axiosClient.get(`/posts?page=${page}&limit=${limit}`);
+  return {
+    blogs: response.data?.data?.posts ?? [],
+    pagination: response.data?.pagination ?? {},
+  };
+};
+
 export const getBlogById = async (id: number): Promise<Blog> => {
   const response = await axiosClient.get(`/posts/${id}`);
   return parseApiResponse(response.data, blogSchema, ["post", "blog"]);
@@ -60,12 +68,10 @@ export const getVisitorStats = async (days?: number): Promise<any> => {
 
 export const getAllVisitors = async (page = 1, limit = 20): Promise<any> => {
   const response = await axiosClient.get(`/visitors?page=${page}&limit=${limit}`);
-  // Return the inner data object with visitors list and pagination
-  const data = response.data?.data ?? response.data;
   return {
-    visitors: data?.visitors ?? [],
-    pagination: data?.pagination ?? {},
-    results: data?.results ?? 0,
+    visitors: response.data?.data?.visitors ?? [],
+    pagination: response.data?.pagination ?? {},
+    results: response.data?.results ?? 0,
   };
 };
 

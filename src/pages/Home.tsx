@@ -54,7 +54,7 @@ const Home = () => {
           contact me
         </a>
       </div>
-      <Blogs limit={5} />
+      <Blogs limit={4} />
       <div style={{ marginTop: "24px" }}>
         <a
           href="/blogs"
