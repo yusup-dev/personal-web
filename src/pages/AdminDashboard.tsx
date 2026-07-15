@@ -6,7 +6,6 @@ import {
   getExperiences,
   getEducations,
   getPortfolio,
-  getBlog,
   getBlogPaginated,
   updateAbout,
   createSkill,
